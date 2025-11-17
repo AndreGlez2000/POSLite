@@ -29,7 +29,9 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
 //
 //
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navbar)
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavBar)
+        bottomNav.background = null
+        bottomNav.menu.getItem(1).isEnabled = false
         bottomNav.setupWithNavController(navController)
 //
 

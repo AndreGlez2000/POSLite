@@ -8,9 +8,9 @@
         android:title="Categorias"/>
 
     <item
-        android:id="@+id/cartFragment"
-        android:title="Venta"
-        android:icon="@drawable/cart_icon"/>
+        android:id="@+id/aux"
+        android:title=""/>
+
 
     <item
         android:id="@+id/receiptFragment"
