@@ -8,21 +8,60 @@
     <fragment
         android:id="@+id/categoriesFragment"
         android:name="com.example.testlite.CategoriesFragment"
-        android:label="fragment_categories"
-        tools:layout="@layout/fragment_categories" />
+        android:label="Categorías"
+        tools:layout="@layout/fragment_categories">
+        <action
+            android:id="@+id/action_categoriesFragment_to_productsFragment"
+            app:destination="@id/productsFragment" />
+    </fragment>
+
     <fragment
         android:id="@+id/productsFragment"
         android:name="com.example.testlite.ProductsFragment"
-        android:label="fragment_products"
-        tools:layout="@layout/fragment_products" />
+        android:label="Productos"
+        tools:layout="@layout/fragment_products">
+        <argument
+            android:name="categoryId"
+            app:argType="string" />
+    </fragment>
+
     <fragment
         android:id="@+id/cartFragment"
         android:name="com.example.testlite.CartFragment"
-        android:label="fragment_cart"
-        tools:layout="@layout/fragment_cart" />
+        android:label="Carrito"
+        tools:layout="@layout/fragment_cart">
+        <action
+            android:id="@+id/action_cartFragment_to_barcodeScannerFragment"
+            app:destination="@id/barcodeScannerFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/barcodeScannerFragment"
+        android:name="com.example.testlite.BarcodeScannerFragment"
+        android:label="Escáner"
+        tools:layout="@layout/fragment_barcode_scanner">
+        <action
+            android:id="@+id/action_barcodeScannerFragment_to_cartFragment"
+            app:destination="@id/cartFragment" />
+    </fragment>
+
     <fragment
         android:id="@+id/receiptFragment"
         android:name="com.example.testlite.ReceiptFragment"
-        android:label="fragment_receipt"
+        android:label="Recibos"
         tools:layout="@layout/fragment_receipt" />
+
+    <!-- Acciones globales para navegar desde cualquier lugar -->
+    <action
+        android:id="@+id/action_global_to_cartFragment"
+        app:destination="@id/cartFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="false" />
+
+    <action
+        android:id="@+id/action_global_to_barcodeScannerFragment"
+        app:destination="@id/barcodeScannerFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="false" />
+
 </navigation>

@@ -20,9 +20,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:hint="@string/buscar_producto"/>
+            android:layout_weight="1" />
 
         <!-- Add -->
         <com.google.android.material.floatingactionbutton.FloatingActionButton

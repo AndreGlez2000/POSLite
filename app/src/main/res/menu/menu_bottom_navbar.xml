@@ -8,7 +8,8 @@
         android:title="Categorias"/>
 
     <item
-        android:id="@+id/aux"
+        android:id="@+id/placeholder"
+        android:enabled="false"
         android:title=""/>
 
 
