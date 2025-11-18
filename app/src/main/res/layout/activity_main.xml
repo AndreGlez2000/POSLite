@@ -22,7 +22,7 @@
         android:layout_gravity="bottom"
         app:fabCradleMargin="10dp"
         app:fabCradleRoundedCornerRadius="10dp"
-        app:fabCradleVerticalOffset="10dp">
+        app:fabCradleVerticalOffset="0dp">
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavBar"
@@ -39,6 +39,9 @@
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:fabSize="auto"
+        app:fabCustomSize="70dp"
+        app:maxImageSize="30dp"
         android:src="@drawable/cart_icon"
         app:layout_anchor="@id/bottomAppBar"/>
 

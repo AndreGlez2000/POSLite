@@ -1,8 +1,12 @@
 package com.example.testlite
 
+import android.content.res.ColorStateList
 import android.os.Bundle
+import android.util.TypedValue
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.fragment.NavHostFragment
@@ -58,18 +62,41 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.cartFragment, R.id.barcodeScannerFragment -> {
+                R.id.barcodeScannerFragment -> {
+                    // Escáner: ocultar nav, mostrar carrito rojo
+                    binding.bottomNavBar.visibility = View.INVISIBLE
                     binding.bottomNavBar.menu.findItem(R.id.placeholder)?.isChecked = true
-
-                    if (destination.id == R.id.barcodeScannerFragment) {
-                        binding.fab.setImageResource(R.drawable.cart_icon)
-                    } else {
-                        binding.fab.setImageResource(R.drawable.barcode_scanner)
-                    }
+                    binding.fab.setImageResource(R.drawable.cart_icon)
+                    binding.fab.backgroundTintList = ColorStateList.valueOf(
+                        android.graphics.Color.parseColor("#00BFA5")
+                    )
+                }
+                R.id.cartFragment -> {
+                    // Carrito: mostrar nav, scanner verde azulado
+                    binding.bottomNavBar.visibility = View.VISIBLE
+                    binding.bottomNavBar.menu.findItem(R.id.placeholder)?.isChecked = true
+                    binding.fab.setImageResource(R.drawable.barcode_scanner)
+                    binding.fab.backgroundTintList = ColorStateList.valueOf(
+                        android.graphics.Color.parseColor("#C2185B")
+                    )
+                }
+                else -> {
+                    // Default: carrito azul
+                    binding.bottomNavBar.visibility = View.VISIBLE
+                    binding.fab.setImageResource(R.drawable.cart_icon)
+                    binding.fab.backgroundTintList = ColorStateList.valueOf(
+                        android.graphics.Color.parseColor("#00BFA5")
+                    )
                 }
             }
         }
 
 
         }
+
+    private fun getColorFromAttr(attrColor: Int) : Int {
+        val typedValue = TypedValue()
+        theme.resolveAttribute(attrColor, typedValue, true)
+        return typedValue.data
     }
+}
