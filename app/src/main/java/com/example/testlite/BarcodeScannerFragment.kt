@@ -1,6 +1,7 @@
 package com.example.testlite
 
 import android.Manifest
+import android.R
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -29,6 +30,11 @@ class BarcodeScannerFragment : Fragment() {
     private lateinit var cameraExecutor: ExecutorService
     private var camera: Camera? = null
     private var imageAnalyzer: ImageAnalysis? = null
+
+    // Variables para la verificacion de Cooldown
+    private var lastScannedCode: String? = null
+    private var lastScanTime: Long = 0
+    private val SCAN_COOLDOWN_MS = 3000L // 3 Segundos de cooldown
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -110,8 +116,18 @@ class BarcodeScannerFragment : Fragment() {
         for (barcode in barcodes) {
             val rawValue = barcode.rawValue ?: continue
 
+            // Esto valida el codigo con el tiempo transcurrido
+            val currentTime = System.currentTimeMillis()
+            if (rawValue == lastScannedCode && (currentTime - lastScanTime) < SCAN_COOLDOWN_MS) {
+                continue // Ignora el producto durante el cooldown
+            }
+
+            // Actualiza los valores del cooldown
+            lastScannedCode = rawValue
+            lastScanTime = currentTime
+
             activity?.runOnUiThread {
-                // Logica para que vibre el telefono 👌
+                // Logica para que vibre el telefono 😭😭💀 y que solo dure 100ms
                 val vibrator = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
                     val vibratorManager = requireContext().getSystemService(android.content.Context.VIBRATOR_MANAGER_SERVICE) as android.os.VibratorManager
                     vibratorManager.defaultVibrator
@@ -145,6 +161,9 @@ class BarcodeScannerFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         cameraExecutor.shutdown()
+        // Pinche memoria dinamica nomas no desaparece, solo se transforma 💀
+        lastScannedCode = null
+        lastScanTime = 0
         _binding = null
     }
 
