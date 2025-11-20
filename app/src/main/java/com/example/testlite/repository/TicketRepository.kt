@@ -36,4 +36,11 @@ class TicketRepository(private val ticketDao: TicketDao) {
     suspend fun getTicketWithItems(ticketId: Int): TicketWithItems? {
         return ticketDao.getTicketWithItems(ticketId)
     }
+    
+    suspend fun deleteTicket(ticketId: Int) {
+        val ticket = ticketDao.getTicketById(ticketId)
+        if (ticket != null) {
+            ticketDao.deleteTicket(ticket)
+        }
+    }
 }

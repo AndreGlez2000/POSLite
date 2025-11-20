@@ -3,14 +3,18 @@ package com.example.testlite
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class CartItemAdapter : RecyclerView.Adapter<CartItemAdapter.CartItemViewHolder>() {
+class CartItemAdapter(
+    private val onIncreaseClick: (CartItem) -> Unit,
+    private val onDecreaseClick: (CartItem) -> Unit
+) : RecyclerView.Adapter<CartItemAdapter.CartItemViewHolder>() {
     
-    private var items = listOf<Product>()
+    private var items = listOf<CartItem>()
     
-    fun updateList(newItems: List<Product>) {
+    fun updateList(newItems: List<CartItem>) {
         items = newItems
         notifyDataSetChanged()
     }
@@ -22,7 +26,7 @@ class CartItemAdapter : RecyclerView.Adapter<CartItemAdapter.CartItemViewHolder>
     }
     
     override fun onBindViewHolder(holder: CartItemViewHolder, position: Int) {
-        holder.bind(items[position])
+        holder.bind(items[position], onIncreaseClick, onDecreaseClick)
     }
     
     override fun getItemCount() = items.size
@@ -31,11 +35,24 @@ class CartItemAdapter : RecyclerView.Adapter<CartItemAdapter.CartItemViewHolder>
         private val tvProductName: TextView = itemView.findViewById(R.id.tv_product_name)
         private val tvProductSku: TextView = itemView.findViewById(R.id.tv_product_sku)
         private val tvProductPrice: TextView = itemView.findViewById(R.id.tv_product_price)
+        private val tvQuantity: TextView = itemView.findViewById(R.id.tv_quantity)
+        private val tvSubtotal: TextView = itemView.findViewById(R.id.tv_subtotal)
+        private val btnIncrease: ImageButton = itemView.findViewById(R.id.btn_increase)
+        private val btnDecrease: ImageButton = itemView.findViewById(R.id.btn_decrease)
         
-        fun bind(product: Product) {
-            tvProductName.text = product.name
-            tvProductSku.text = "SKU: ${product.sku}"
-            tvProductPrice.text = "$${String.format("%.2f", product.price)}"
+        fun bind(
+            cartItem: CartItem,
+            onIncreaseClick: (CartItem) -> Unit,
+            onDecreaseClick: (CartItem) -> Unit
+        ) {
+            tvProductName.text = cartItem.product.name
+            tvProductSku.text = "SKU: ${cartItem.product.sku}"
+            tvProductPrice.text = "$${String.format("%.2f", cartItem.product.price)} c/u"
+            tvQuantity.text = cartItem.quantity.toString()
+            tvSubtotal.text = "$${String.format("%.2f", cartItem.subtotal)}"
+            
+            btnIncrease.setOnClickListener { onIncreaseClick(cartItem) }
+            btnDecrease.setOnClickListener { onDecreaseClick(cartItem) }
         }
     }
 }

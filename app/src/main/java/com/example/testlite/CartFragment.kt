@@ -31,9 +31,17 @@ class CartFragment : Fragment() {
         val rvCartItems: RecyclerView = view.findViewById(R.id.rv_cart_items)
         val tvTotal: TextView = view.findViewById(R.id.tv_total)
         val btnCompleteSale: Button = view.findViewById(R.id.btn_complete_sale)
+        val btnClearCart: android.widget.ImageButton = view.findViewById(R.id.btn_clear_cart)
         
-        // Setup RecyclerView
-        adapter = CartItemAdapter()
+        // Setup RecyclerView with quantity controls
+        adapter = CartItemAdapter(
+            onIncreaseClick = { cartItem ->
+                cartViewModel.incrementQuantity(cartItem)
+            },
+            onDecreaseClick = { cartItem ->
+                cartViewModel.decrementQuantity(cartItem)
+            }
+        )
         rvCartItems.adapter = adapter
         rvCartItems.layoutManager = LinearLayoutManager(requireContext())
         
@@ -50,10 +58,10 @@ class CartFragment : Fragment() {
         
         // Complete sale button
         btnCompleteSale.setOnClickListener {
-            val cartItems = cartViewModel.cartItems.value ?: emptyList()
+            val productsList = cartViewModel.getProductsList()
             
             ticketViewModel.completeSale(
-                cartItems = cartItems,
+                cartItems = productsList,
                 onSuccess = {
                     cartViewModel.clearCart()
                     Toast.makeText(requireContext(), "Venta completada exitosamente", Toast.LENGTH_SHORT).show()
@@ -62,6 +70,21 @@ class CartFragment : Fragment() {
                     Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
                 }
             )
+        }
+        
+        // Clear cart button
+        btnClearCart.setOnClickListener {
+            if (cartViewModel.cartItems.value?.isNotEmpty() == true) {
+                android.app.AlertDialog.Builder(requireContext())
+                    .setTitle("Cancelar Venta")
+                    .setMessage("¿Estás seguro de que deseas vaciar el carrito?")
+                    .setPositiveButton("Sí") { _, _ ->
+                        cartViewModel.clearCart()
+                        Toast.makeText(requireContext(), "Carrito vaciado", Toast.LENGTH_SHORT).show()
+                    }
+                    .setNegativeButton("No", null)
+                    .show()
+            }
         }
     }
 }

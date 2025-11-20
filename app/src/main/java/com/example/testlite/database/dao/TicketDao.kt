@@ -27,4 +27,10 @@ interface TicketDao {
     @Transaction
     @Query("SELECT * FROM Ticket WHERE ticket_id = :ticketId")
     suspend fun getTicketWithItems(ticketId: Int): TicketWithItems?
+    
+    @Query("SELECT * FROM Ticket WHERE ticket_id = :ticketId")
+    suspend fun getTicketById(ticketId: Int): TicketEntity?
+    
+    @Delete
+    suspend fun deleteTicket(ticket: TicketEntity)
 }

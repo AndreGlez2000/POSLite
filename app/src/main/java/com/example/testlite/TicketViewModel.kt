@@ -7,6 +7,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.testlite.database.AppDatabase
 import com.example.testlite.database.entities.TicketEntity
+import com.example.testlite.database.relations.TicketWithItems
 import com.example.testlite.repository.TicketRepository
 import kotlinx.coroutines.launch
 
@@ -32,6 +33,28 @@ class TicketViewModel(application: Application) : AndroidViewModel(application) 
                 onSuccess()
             } catch (e: Exception) {
                 onError("Error al guardar la venta: ${e.message}")
+            }
+        }
+    }
+    
+    fun getTicketWithItems(ticketId: Int, onResult: (TicketWithItems?) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val result = ticketRepository.getTicketWithItems(ticketId)
+                onResult(result)
+            } catch (e: Exception) {
+                onResult(null)
+            }
+        }
+    }
+    
+    fun deleteTicket(ticketId: Int, onSuccess: () -> Unit, onError: (String) -> Unit) {
+        viewModelScope.launch {
+            try {
+                ticketRepository.deleteTicket(ticketId)
+                onSuccess()
+            } catch (e: Exception) {
+                onError("Error al eliminar el ticket: ${e.message}")
             }
         }
     }

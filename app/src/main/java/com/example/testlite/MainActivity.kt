@@ -81,10 +81,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateFabState(destinationId: Int?, cartItems: List<Product>?) {
+    private fun updateFabState(destinationId: Int?, cartItems: List<CartItem>?) {
         val items = cartItems ?: emptyList()
-        val total = items.sumOf { it.price }
-        val count = items.size
+        val total = items.sumOf { it.subtotal }
+        val count = items.sumOf { it.quantity }
 
         when (destinationId) {
             R.id.barcodeScannerFragment -> {
