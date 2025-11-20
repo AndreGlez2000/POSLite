@@ -36,15 +36,16 @@
 
     </com.google.android.material.bottomappbar.BottomAppBar>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:fabSize="auto"
-        app:fabCustomSize="70dp"
-        app:maxImageSize="30dp"
-        android:src="@drawable/cart_icon"
-        app:layout_anchor="@id/bottomAppBar"/>
+        android:text="Proceder Venta"
+        android:textColor="@android:color/white"
+        app:icon="@drawable/cart_icon"
+        app:iconTint="@android:color/white"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="80dp" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

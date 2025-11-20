@@ -7,8 +7,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class CategoryAdapter(
-    private val items: List<String>,
-    private val onItemClick: (String) -> Unit = {}
+    private var items: List<Category>,
+    private val onItemClick: (Category) -> Unit = {}
 ) : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
 
     inner class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -22,11 +22,16 @@ class CategoryAdapter(
     }
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
-        val name = items[position]
-        holder.tvName.text = name
-        holder.itemView.setOnClickListener { onItemClick(name) }
+        val category = items[position]
+        holder.tvName.text = category.name
+        holder.itemView.setOnClickListener { onItemClick(category) }
     }
 
     override fun getItemCount(): Int = items.size
+
+    fun updateList(newItems: List<Category>) {
+        items = newItems
+        notifyDataSetChanged()
+    }
 }
 

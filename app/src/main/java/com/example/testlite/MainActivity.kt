@@ -17,11 +17,14 @@ import androidx.core.view.get
 import androidx.core.view.size
 import androidx.navigation.findNavController
 import com.example.testlite.databinding.ActivityMainBinding
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import androidx.activity.viewModels
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
+    private val cartViewModel: CartViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -46,12 +49,25 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavBar.menu.getItem(1).isEnabled = false
         binding.bottomNavBar.setupWithNavController(navController)
 
+        // Initial state: shrink
+        binding.fab.shrink()
+
+        cartViewModel.cartItems.observe(this) { items ->
+            updateFabState(navController.currentDestination?.id, items)
+        }
+
+        cartViewModel.totalPrice.observe(this) { total ->
+             updateFabState(navController.currentDestination?.id, cartViewModel.cartItems.value)
+        }
+
         binding.fab.setOnClickListener {
             when (navController.currentDestination?.id) {
                 R.id.cartFragment -> {
                     navController.navigate(R.id.action_cartFragment_to_barcodeScannerFragment)
                 }
                 R.id.barcodeScannerFragment -> {
+                    // Fix: Use popBackStack instead of navigate to avoid loop or stack issues if possible
+                    // But since we want to go to Cart, navigate is fine if action exists.
                     navController.navigate(R.id.action_barcodeScannerFragment_to_cartFragment)
                 }
                 else -> {
@@ -61,38 +77,61 @@ class MainActivity : AppCompatActivity() {
         }
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            when (destination.id) {
-                R.id.barcodeScannerFragment -> {
-                    // Escáner: ocultar nav, mostrar carrito rojo
-                    binding.bottomNavBar.visibility = View.INVISIBLE
-                    binding.bottomNavBar.menu.findItem(R.id.placeholder)?.isChecked = true
-                    binding.fab.setImageResource(R.drawable.cart_icon)
-                    binding.fab.backgroundTintList = ColorStateList.valueOf(
-                        android.graphics.Color.parseColor("#00BFA5")
-                    )
+            updateFabState(destination.id, cartViewModel.cartItems.value)
+        }
+    }
+
+    private fun updateFabState(destinationId: Int?, cartItems: List<Product>?) {
+        val items = cartItems ?: emptyList()
+        val total = items.sumOf { it.price }
+        val count = items.size
+
+        when (destinationId) {
+            R.id.barcodeScannerFragment -> {
+                // Escáner: ocultar nav, mostrar carrito rojo (shrink)
+                binding.bottomNavBar.visibility = View.VISIBLE
+                binding.bottomNavBar.menu.findItem(R.id.placeholder)?.isChecked = true
+                binding.fab.backgroundTintList = ColorStateList.valueOf(
+                    android.graphics.Color.parseColor("#00BFA5")
+                )
+                
+                if (items.isNotEmpty()) {
+                    binding.fab.extend()
+                    binding.fab.setIconResource(R.drawable.cart_icon)
+                    binding.fab.text = "Proceder Venta ($count) - $${String.format("%.2f", total)}"
+                } else {
+                    binding.fab.shrink()
+                    binding.fab.setIconResource(R.drawable.cart_icon)
                 }
-                R.id.cartFragment -> {
-                    // Carrito: mostrar nav, scanner verde azulado
-                    binding.bottomNavBar.visibility = View.VISIBLE
-                    binding.bottomNavBar.menu.findItem(R.id.placeholder)?.isChecked = true
-                    binding.fab.setImageResource(R.drawable.barcode_scanner)
-                    binding.fab.backgroundTintList = ColorStateList.valueOf(
-                        android.graphics.Color.parseColor("#C2185B")
-                    )
-                }
-                else -> {
-                    // Default: carrito azul
-                    binding.bottomNavBar.visibility = View.VISIBLE
-                    binding.fab.setImageResource(R.drawable.cart_icon)
-                    binding.fab.backgroundTintList = ColorStateList.valueOf(
-                        android.graphics.Color.parseColor("#00BFA5")
-                    )
+            }
+            R.id.cartFragment -> {
+                // Carrito: mostrar nav, scanner verde azulado (shrink)
+                binding.bottomNavBar.visibility = View.VISIBLE
+                binding.bottomNavBar.menu.findItem(R.id.placeholder)?.isChecked = true
+                binding.fab.shrink()
+                binding.fab.setIconResource(R.drawable.barcode_scanner)
+                binding.fab.backgroundTintList = ColorStateList.valueOf(
+                    android.graphics.Color.parseColor("#C2185B")
+                )
+            }
+            else -> {
+                // Default
+                binding.bottomNavBar.visibility = View.VISIBLE
+                binding.fab.backgroundTintList = ColorStateList.valueOf(
+                    android.graphics.Color.parseColor("#00BFA5")
+                )
+
+                if (items.isNotEmpty()) {
+                    binding.fab.extend()
+                    binding.fab.setIconResource(R.drawable.cart_icon)
+                    binding.fab.text = "Proceder Venta ($count) - $${String.format("%.2f", total)}"
+                } else {
+                    binding.fab.shrink()
+                    binding.fab.setIconResource(R.drawable.cart_icon)
                 }
             }
         }
-
-
-        }
+    }
 
     private fun getColorFromAttr(attrColor: Int) : Int {
         val typedValue = TypedValue()

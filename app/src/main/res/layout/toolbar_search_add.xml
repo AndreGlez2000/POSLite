@@ -1,11 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.appbar.MaterialToolbar
-    android:id="@+id/toolbar_search_add"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
-    android:background="?attr/colorSurface"
-    android:theme="@style/ThemeOverlay.Material3.Toolbar.Surface"
-    >
+    android:layout_height="wrap_content"
+    android:padding="8dp">
 
-</com.google.android.material.appbar.MaterialToolbar>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="?attr/homeAsUpIndicator"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:visibility="gone"
+            android:contentDescription="Atrás"
+            android:layout_marginEnd="4dp"
+            app:tint="?attr/colorControlNormal" />
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/search_bar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            app:iconifiedByDefault="false"
+            app:queryHint="Buscar..." />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/agregar_categoria_producto"
+            android:src="@android:drawable/ic_input_add"
+            app:fabSize="mini" />
+    </LinearLayout>
+
+</RelativeLayout>

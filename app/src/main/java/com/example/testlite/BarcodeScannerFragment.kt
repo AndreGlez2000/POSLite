@@ -1,7 +1,6 @@
 package com.example.testlite
 
 import android.Manifest
-import android.R
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +14,8 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.example.testlite.databinding.FragmentBarcodeScannerBinding
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
@@ -22,7 +23,9 @@ import com.google.mlkit.vision.common.InputImage
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class BarcodeScannerFragment : Fragment() {
+import androidx.fragment.app.DialogFragment
+
+class BarcodeScannerFragment : DialogFragment() {
 
     private var _binding: FragmentBarcodeScannerBinding? = null
     private val binding get() = _binding!!
@@ -30,6 +33,9 @@ class BarcodeScannerFragment : Fragment() {
     private lateinit var cameraExecutor: ExecutorService
     private var camera: Camera? = null
     private var imageAnalyzer: ImageAnalysis? = null
+
+    private val inventoryViewModel: InventoryViewModel by activityViewModels()
+    private val cartViewModel: CartViewModel by activityViewModels()
 
     // Variables para la verificacion de Cooldown
     private var lastScannedCode: String? = null
@@ -44,6 +50,14 @@ class BarcodeScannerFragment : Fragment() {
         } else {
             Toast.makeText(requireContext(), "Permiso de cámara requerido", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
     }
 
     override fun onCreateView(
@@ -126,6 +140,9 @@ class BarcodeScannerFragment : Fragment() {
             lastScannedCode = rawValue
             lastScanTime = currentTime
 
+            // Check if we need to return the result
+            val isPickMode = arguments?.getBoolean("isPickMode") ?: false
+            
             activity?.runOnUiThread {
                 // Logica para que vibre el telefono 😭😭💀 y que solo dure 100ms
                 val vibrator = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
@@ -143,18 +160,41 @@ class BarcodeScannerFragment : Fragment() {
                     vibrator.vibrate(200)
                 }
 
-                // Como no me gusta los pinches 2s insufribles le bajare de tiempo
-                val toast = Toast.makeText(requireContext(), "Escaneado: $rawValue", Toast.LENGTH_SHORT)
-                toast.show()
+                if (isPickMode) {
+                     val result = Bundle().apply {
+                        putString("bundleKey", rawValue)
+                    }
+                    parentFragmentManager.setFragmentResult("requestKey", result)
+                    findNavController().popBackStack()
+                } else {
+                     // Como no me gusta los pinches 2s insufribles le bajare de tiempo
+                    val fab = activity?.findViewById<View>(R.id.fab)
+                    val snackbar = com.google.android.material.snackbar.Snackbar.make(binding.root, "Escaneado: $rawValue", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT)
+                    if (fab != null) {
+                        snackbar.setAnchorView(fab)
+                    }
+                    snackbar.show()
 
-                // Cancelar el toast despues de 500ms (medio segundo)
-                binding.root.postDelayed({
-                    toast.cancel()
-                }, 500)
+                    // Cancelar el snackbar despues de 500ms (medio segundo)
+                    binding.root.postDelayed({
+                        snackbar.dismiss()
+                    }, 500)
+                    
+                    // Add to cart logic
+                    val product = inventoryViewModel.products.value?.find { it.sku == rawValue }
+                    
+                    if (product != null) {
+                        cartViewModel.addToCart(product)
+                        com.google.android.material.snackbar.Snackbar.make(binding.root, "Agregado: ${product.name}", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT)
+                            .setAnchorView(fab)
+                            .show()
+                    } else {
+                        com.google.android.material.snackbar.Snackbar.make(binding.root, "Producto no encontrado", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT)
+                            .setAnchorView(fab)
+                            .show()
+                    }
+                }
             }
-
-            // Aquí puedes agregar el producto al carrito o realizar otra acción
-            Log.d(TAG, "Código escaneado: $rawValue")
         }
     }
 
