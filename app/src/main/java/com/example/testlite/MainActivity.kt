@@ -64,7 +64,6 @@ class MainActivity : AppCompatActivity() {
             when (destination.id) {
                 R.id.barcodeScannerFragment -> {
                     // Escáner: ocultar nav, mostrar carrito rojo
-                    binding.bottomAppBar.visibility = View.INVISIBLE
                     binding.bottomNavBar.visibility = View.INVISIBLE
                     binding.bottomNavBar.menu.findItem(R.id.placeholder)?.isChecked = true
                     binding.fab.setImageResource(R.drawable.cart_icon)
@@ -74,7 +73,6 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.cartFragment -> {
                     // Carrito: mostrar nav, scanner verde azulado
-                    binding.bottomAppBar.visibility = View.VISIBLE
                     binding.bottomNavBar.visibility = View.VISIBLE
                     binding.bottomNavBar.menu.findItem(R.id.placeholder)?.isChecked = true
                     binding.fab.setImageResource(R.drawable.barcode_scanner)
@@ -84,7 +82,6 @@ class MainActivity : AppCompatActivity() {
                 }
                 else -> {
                     // Default: carrito azul
-                    binding.bottomAppBar.visibility = View.VISIBLE
                     binding.bottomNavBar.visibility = View.VISIBLE
                     binding.fab.setImageResource(R.drawable.cart_icon)
                     binding.fab.backgroundTintList = ColorStateList.valueOf(
