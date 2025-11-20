@@ -30,4 +30,9 @@ class CartViewModel : ViewModel() {
         val total = _cartItems.value.orEmpty().sumOf { it.price }
         _totalPrice.value = total
     }
+    
+    fun clearCart() {
+        _cartItems.value = emptyList()
+        _totalPrice.value = 0.0
+    }
 }
