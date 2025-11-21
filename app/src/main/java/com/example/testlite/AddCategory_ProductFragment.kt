@@ -150,6 +150,20 @@ class AddCategory_ProductFragment : DialogFragment() {
                     etCategory.error = "Selecciona una categoría"
                     return@setOnClickListener
                 }
+                
+                // Validate SKU is unique
+                val existingProducts = inventoryViewModel.products.value ?: emptyList()
+                val skuExists = existingProducts.any { it.sku == sku }
+                
+                if (skuExists) {
+                    etSku.error = "Este SKU ya existe"
+                    Toast.makeText(
+                        context,
+                        "Ya existe un producto con el SKU: $sku",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return@setOnClickListener
+                }
 
                 inventoryViewModel.addProduct(name, price, sku, selectedCategoryId)
                 Toast.makeText(context, "Producto agregado", Toast.LENGTH_SHORT).show()

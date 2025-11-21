@@ -7,14 +7,21 @@
     app:cardCornerRadius="20dp"
     app:cardElevation="15dp">
 
-    <TextView
-        android:id="@+id/tvCategoryName"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="48dp"
-        android:text="Categoria"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        android:gravity="center"/>
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvCategoryName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingVertical="16dp"
+            android:text="Categoria"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
+    </RelativeLayout>
 
 </com.google.android.material.card.MaterialCardView>

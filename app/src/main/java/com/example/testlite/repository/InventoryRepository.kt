@@ -35,4 +35,12 @@ class InventoryRepository(
     suspend fun getProductBySku(sku: String): Product? {
         return productDao.getProductBySku(sku)?.toDomain()
     }
+
+    suspend fun deleteProduct(sku: String) {
+        productDao.deleteBySku(sku)
+    }
+
+    suspend fun deleteCategory(id: Int) {
+        categoriaDao.deleteById(id)
+    }
 }

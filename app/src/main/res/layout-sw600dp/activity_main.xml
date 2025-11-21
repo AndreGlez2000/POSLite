@@ -6,14 +6,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/nav_host_fragment"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="androidx.navigation.fragment.NavHostFragment"
-        app:defaultNavHost="true"
-        app:navGraph="@navigation/nav_graph"
-         />
+        android:orientation="horizontal"
+        android:layout_marginBottom="65dp"> <!-- Space for BottomAppBar -->
+
+        <!-- Left Pane: Navigation (Categories, Products, etc.) -->
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/nav_host_fragment"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.6"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            app:defaultNavHost="true"
+            app:navGraph="@navigation/nav_graph" />
+
+        <!-- Divider -->
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="?android:attr/listDivider" />
+
+        <!-- Right Pane: Cart -->
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/cart_fragment_container"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.4" />
+
+    </LinearLayout>
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
@@ -31,23 +53,21 @@
             android:layout_marginEnd="16dp"
             app:itemRippleColor="@android:color/transparent"
             android:background="@android:color/transparent"
-            app:labelVisibilityMode="labeled"
             app:menu="@menu/menu_bottom_navbar"/>
-
 
     </com.google.android.material.bottomappbar.BottomAppBar>
 
+    <!-- FAB for Scanning (Tablet Mode) -->
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Proceder Venta"
+        android:text="Escanear"
         android:textColor="@android:color/white"
-        app:icon="@drawable/cart_icon"
+        app:icon="@drawable/barcode_scanner"
         app:iconTint="@android:color/white"
+        app:backgroundTint="#C2185B"
         android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="80dp" />
-
+        app:layout_anchor="@id/bottomAppBar" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
-

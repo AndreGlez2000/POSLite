@@ -52,6 +52,10 @@ class TicketAdapter(
             tvTicketTotal.text = "Total: $${String.format("%.2f", ticket.total)}"
             
             itemView.setOnClickListener { onTicketClick(ticket) }
+            itemView.setOnLongClickListener {
+                onDeleteClick(ticket)
+                true
+            }
             btnDelete.setOnClickListener { onDeleteClick(ticket) }
         }
     }

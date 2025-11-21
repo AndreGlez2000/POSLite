@@ -3,12 +3,14 @@ package com.example.testlite
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class CategoryAdapter(
     private var items: List<Category>,
-    private val onItemClick: (Category) -> Unit = {}
+    private val onItemClick: (Category) -> Unit = {},
+    private val onDeleteClick: (Category) -> Unit = {}
 ) : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
 
     inner class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -25,6 +27,10 @@ class CategoryAdapter(
         val category = items[position]
         holder.tvName.text = category.name
         holder.itemView.setOnClickListener { onItemClick(category) }
+        holder.itemView.setOnLongClickListener {
+            onDeleteClick(category)
+            true
+        }
     }
 
     override fun getItemCount(): Int = items.size
@@ -34,4 +40,3 @@ class CategoryAdapter(
         notifyDataSetChanged()
     }
 }
-

@@ -40,4 +40,26 @@ class InventoryViewModel(application: Application) : AndroidViewModel(applicatio
     fun getProductsByCategory(categoryId: Int): List<Product> {
         return products.value.orEmpty().filter { it.categoryId == categoryId }
     }
+
+    fun deleteProduct(sku: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
+        viewModelScope.launch {
+            try {
+                inventoryRepository.deleteProduct(sku)
+                onSuccess()
+            } catch (e: Exception) {
+                onError("Error al eliminar producto: ${e.message}")
+            }
+        }
+    }
+
+    fun deleteCategory(id: Int, onSuccess: () -> Unit, onError: (String) -> Unit) {
+        viewModelScope.launch {
+            try {
+                inventoryRepository.deleteCategory(id)
+                onSuccess()
+            } catch (e: Exception) {
+                onError("Error al eliminar categoría: ${e.message}")
+            }
+        }
+    }
 }

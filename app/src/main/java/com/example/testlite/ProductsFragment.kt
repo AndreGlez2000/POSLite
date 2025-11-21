@@ -35,16 +35,37 @@ class ProductsFragment : Fragment() {
         val fabAddProduct = view.findViewById<FloatingActionButton>(R.id.fab_add_product)
         val fabAddCategory = view.findViewById<FloatingActionButton>(R.id.fab_add_category)
         val btnBack = view.findViewById<android.widget.ImageButton>(R.id.btn_back)
+        val searchView = view.findViewById<androidx.appcompat.widget.SearchView>(R.id.search_bar)
 
         btnBack.visibility = View.VISIBLE
         btnBack.setOnClickListener {
             findNavController().navigateUp()
         }
 
-        adapter = ProductAdapter(emptyList()) { product ->
-            cartViewModel.addToCart(product)
-            // Toast removed as per request
-        }
+        adapter = ProductAdapter(
+            items = emptyList(),
+            onItemClick = { product ->
+                cartViewModel.addToCart(product)
+            },
+            onDeleteClick = { product ->
+                android.app.AlertDialog.Builder(requireContext())
+                    .setTitle("Eliminar Producto")
+                    .setMessage("¿Estás seguro de que deseas eliminar '${product.name}'?")
+                    .setPositiveButton("Sí") { _, _ ->
+                        inventoryViewModel.deleteProduct(
+                            sku = product.sku,
+                            onSuccess = {
+                                android.widget.Toast.makeText(requireContext(), "Producto eliminado", android.widget.Toast.LENGTH_SHORT).show()
+                            },
+                            onError = { error ->
+                                android.widget.Toast.makeText(requireContext(), error, android.widget.Toast.LENGTH_SHORT).show()
+                            }
+                        )
+                    }
+                    .setNegativeButton("No", null)
+                    .show()
+            }
+        )
         recyclerView.adapter = adapter
 
         val categoryId = args.categoryId.toIntOrNull() ?: 0
@@ -52,6 +73,21 @@ class ProductsFragment : Fragment() {
         inventoryViewModel.products.observe(viewLifecycleOwner) { products ->
             val filteredProducts = products.filter { it.categoryId == categoryId }
             adapter.updateList(filteredProducts)
+            
+            searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    return false
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    val query = newText?.lowercase() ?: ""
+                    val searchResults = filteredProducts.filter { 
+                        it.name.lowercase().contains(query) || it.sku.lowercase().contains(query)
+                    }
+                    adapter.updateList(searchResults)
+                    return true
+                }
+            })
         }
 
         fabAdd.setOnClickListener {

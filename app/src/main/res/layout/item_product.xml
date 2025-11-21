@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="16dp">
-        
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -20,39 +20,22 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tv_ticket_id"
+                android:id="@+id/tvProductName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ticket #123"
+                android:text="Product Name"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tv_ticket_date"
+                android:id="@+id/tvProductPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="2024-01-15 14:30"
+                android:text="$0.00"
                 android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/tv_ticket_total"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Total: $150.00"
-                android:textSize="14sp"
-                android:textStyle="bold" />
         </LinearLayout>
-        
-        <ImageButton
-            android:id="@+id/btn_delete_ticket"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center_vertical"
-            android:src="@android:drawable/ic_menu_delete"
-            app:tint="@color/scanner_red"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Eliminar ticket" />
+
+
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

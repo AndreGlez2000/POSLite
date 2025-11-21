@@ -58,18 +58,25 @@ class CartFragment : Fragment() {
         
         // Complete sale button
         btnCompleteSale.setOnClickListener {
-            val productsList = cartViewModel.getProductsList()
-            
-            ticketViewModel.completeSale(
-                cartItems = productsList,
-                onSuccess = {
-                    cartViewModel.clearCart()
-                    Toast.makeText(requireContext(), "Venta completada exitosamente", Toast.LENGTH_SHORT).show()
-                },
-                onError = { error ->
-                    Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
+            android.app.AlertDialog.Builder(requireContext())
+                .setTitle("Confirmar Venta")
+                .setMessage("¿Deseas completar la venta?")
+                .setPositiveButton("Sí") { _, _ ->
+                    val productsList = cartViewModel.getProductsList()
+                    
+                    ticketViewModel.completeSale(
+                        cartItems = productsList,
+                        onSuccess = {
+                            cartViewModel.clearCart()
+                            Toast.makeText(requireContext(), "Venta completada exitosamente", Toast.LENGTH_SHORT).show()
+                        },
+                        onError = { error ->
+                            Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
+                        }
+                    )
                 }
-            )
+                .setNegativeButton("No", null)
+                .show()
         }
         
         // Clear cart button

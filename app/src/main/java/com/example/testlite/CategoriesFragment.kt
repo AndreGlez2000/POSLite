@@ -34,10 +34,31 @@ class CategoriesFragment : Fragment() {
         val btnBack = view.findViewById<android.widget.ImageButton>(R.id.btn_back)
         btnBack.visibility = View.GONE
 
-        adapter = CategoryAdapter(emptyList()) { category ->
-            val action = CategoriesFragmentDirections.actionCategoriesFragmentToProductsFragment(category.id.toString())
-            findNavController().navigate(action)
-        }
+        adapter = CategoryAdapter(
+            items = emptyList(),
+            onItemClick = { category ->
+                val action = CategoriesFragmentDirections.actionCategoriesFragmentToProductsFragment(category.id.toString())
+                findNavController().navigate(action)
+            },
+            onDeleteClick = { category ->
+                android.app.AlertDialog.Builder(requireContext())
+                    .setTitle("Eliminar Categoría")
+                    .setMessage("¿Estás seguro de que deseas eliminar '${category.name}'?")
+                    .setPositiveButton("Sí") { _, _ ->
+                        inventoryViewModel.deleteCategory(
+                            id = category.id,
+                            onSuccess = {
+                                android.widget.Toast.makeText(requireContext(), "Categoría eliminada", android.widget.Toast.LENGTH_SHORT).show()
+                            },
+                            onError = { error ->
+                                android.widget.Toast.makeText(requireContext(), error, android.widget.Toast.LENGTH_SHORT).show()
+                            }
+                        )
+                    }
+                    .setNegativeButton("No", null)
+                    .show()
+            }
+        )
         recyclerView.adapter = adapter
 
         inventoryViewModel.categories.observe(viewLifecycleOwner) { categories ->

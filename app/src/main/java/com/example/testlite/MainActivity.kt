@@ -52,36 +52,68 @@ class MainActivity : AppCompatActivity() {
         // Initial state: shrink
         binding.fab.shrink()
 
-        cartViewModel.cartItems.observe(this) { items ->
-            updateFabState(navController.currentDestination?.id, items)
-        }
+        val isTablet = resources.getBoolean(R.bool.is_tablet)
 
-        cartViewModel.totalPrice.observe(this) { total ->
-             updateFabState(navController.currentDestination?.id, cartViewModel.cartItems.value)
-        }
+        if (isTablet) {
+            // Tablet Logic
+            // 1. Add CartFragment to the right container
+            if (savedInstanceState == null) {
+                val cartFragment = CartFragment()
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.cart_fragment_container, cartFragment)
+                    .commit()
+            }
 
-        binding.fab.setOnClickListener {
-            when (navController.currentDestination?.id) {
-                R.id.cartFragment -> {
-                    navController.navigate(R.id.action_cartFragment_to_barcodeScannerFragment)
-                }
-                R.id.barcodeScannerFragment -> {
-                    // Fix: Use popBackStack instead of navigate to avoid loop or stack issues if possible
-                    // But since we want to go to Cart, navigate is fine if action exists.
-                    navController.navigate(R.id.action_barcodeScannerFragment_to_cartFragment)
-                }
-                else -> {
-                    navController.navigate(R.id.action_global_to_cartFragment)
+            // 2. Remove Categories from BottomNav - REVERTED as per user request
+            // binding.bottomNavBar.menu.removeItem(R.id.categoriesFragment)
+
+            // 3. Configure FAB for Scan only
+            binding.fab.backgroundTintList = ColorStateList.valueOf(
+                android.graphics.Color.parseColor("#C2185B")
+            )
+            binding.fab.setIconResource(R.drawable.barcode_scanner)
+            binding.fab.text = "Escanear"
+            binding.fab.shrink() // Always shrunk as per request
+
+            binding.fab.setOnClickListener {
+                // Open Scanner (Dialog or Fragment)
+                // Assuming barcodeScannerPick is the dialog or fragment we want
+                 navController.navigate(R.id.action_global_to_barcodeScannerFragment)
+            }
+
+        } else {
+            // Phone Logic (Existing)
+            cartViewModel.cartItems.observe(this) { items ->
+                updateFabState(navController.currentDestination?.id, items)
+            }
+
+            cartViewModel.totalPrice.observe(this) { total ->
+                updateFabState(navController.currentDestination?.id, cartViewModel.cartItems.value)
+            }
+
+            binding.fab.setOnClickListener {
+                when (navController.currentDestination?.id) {
+                    R.id.cartFragment -> {
+                        navController.navigate(R.id.action_cartFragment_to_barcodeScannerFragment)
+                    }
+                    R.id.barcodeScannerFragment -> {
+                        navController.navigate(R.id.action_barcodeScannerFragment_to_cartFragment)
+                    }
+                    else -> {
+                        navController.navigate(R.id.action_global_to_cartFragment)
+                    }
                 }
             }
-        }
 
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            updateFabState(destination.id, cartViewModel.cartItems.value)
+            navController.addOnDestinationChangedListener { _, destination, _ ->
+                updateFabState(destination.id, cartViewModel.cartItems.value)
+            }
         }
     }
 
     private fun updateFabState(destinationId: Int?, cartItems: List<CartItem>?) {
+        if (resources.getBoolean(R.bool.is_tablet)) return
+
         val items = cartItems ?: emptyList()
         val total = items.sumOf { it.subtotal }
         val count = items.sumOf { it.quantity }
