@@ -43,7 +43,7 @@ class TicketDetailDialogFragment : DialogFragment() {
     override fun onStart() {
         super.onStart()
         dialog?.window?.apply {
-            val width = resources.displayMetrics.widthPixels - (32.dp() * 2)
+            val width = resources.displayMetrics.widthPixels - (16.dp() * 2)
             setLayout(
                 width,
                 ViewGroup.LayoutParams.WRAP_CONTENT
