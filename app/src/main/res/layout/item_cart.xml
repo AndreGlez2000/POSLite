@@ -17,37 +17,23 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical">
 
             <TextView
                 android:id="@+id/tv_product_name"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Product Name"
                 android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tv_product_sku"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="SKU: 123"
-                android:textSize="12sp"
-                android:textColor="#757575" />
-                
-            <TextView
-                android:id="@+id/tv_product_price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="$0.00 c/u"
-                android:textSize="12sp"
-                android:textColor="#757575"
-                android:layout_marginTop="4dp" />
+                android:textStyle="bold"
+                android:maxLines="2"
+                android:ellipsize="end" />
         </LinearLayout>
         
         <!-- Quantity Controls with modern circular buttons -->
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="110dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
@@ -76,12 +62,12 @@
             
             <TextView
                 android:id="@+id/tv_quantity"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="1"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:minWidth="32dp"
                 android:gravity="center"
                 android:layout_marginHorizontal="8dp" />
             
@@ -107,12 +93,13 @@
 
         <TextView
             android:id="@+id/tv_subtotal"
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:text="$0.00"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:layout_marginStart="12dp" />
+            android:gravity="end"
+            android:layout_marginStart="8dp" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -33,8 +33,6 @@ class CartItemAdapter(
     
     class CartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tvProductName: TextView = itemView.findViewById(R.id.tv_product_name)
-        private val tvProductSku: TextView = itemView.findViewById(R.id.tv_product_sku)
-        private val tvProductPrice: TextView = itemView.findViewById(R.id.tv_product_price)
         private val tvQuantity: TextView = itemView.findViewById(R.id.tv_quantity)
         private val tvSubtotal: TextView = itemView.findViewById(R.id.tv_subtotal)
         private val btnIncrease: MaterialButton = itemView.findViewById(R.id.btn_increase)
@@ -46,8 +44,6 @@ class CartItemAdapter(
             onDecreaseClick: (CartItem) -> Unit
         ) {
             tvProductName.text = cartItem.product.name
-            tvProductSku.text = "SKU: ${cartItem.product.sku}"
-            tvProductPrice.text = "$${String.format("%.2f", cartItem.product.price)} c/u"
             tvQuantity.text = cartItem.quantity.toString()
             tvSubtotal.text = "$${String.format("%.2f", cartItem.subtotal)}"
             
