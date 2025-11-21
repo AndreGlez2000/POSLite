@@ -3,4 +3,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="scanner_red">#C2185B</color>
+    <color name="cart_status_bar_color">#B7B7B7</color>
 </resources>

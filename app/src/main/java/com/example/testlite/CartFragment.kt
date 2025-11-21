@@ -5,13 +5,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
+import androidx.core.graphics.toColorInt
 
 class CartFragment : Fragment() {
     
@@ -36,6 +40,12 @@ class CartFragment : Fragment() {
         val etPaymentAmount: TextInputEditText = view.findViewById(R.id.et_payment_amount)
         val btnCompleteSale: Button = view.findViewById(R.id.btn_complete_sale)
         val btnClearCart: android.widget.ImageButton = view.findViewById(R.id.btn_clear_cart)
+        val tvCartHeader: TextView = view.findViewById(R.id.tv_cart_header)
+        
+        // Set current date
+        val currentDate = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
+            .format(java.util.Date())
+        tvCartHeader.text = currentDate
         
         // Setup RecyclerView with quantity controls
         adapter = CartItemAdapter(
@@ -145,7 +155,7 @@ class CartFragment : Fragment() {
             }
         }
     }
-    
+
     private fun calculateAndShowChange(paymentText: String, tvChange: TextView) {
         if (paymentText.isEmpty()) {
             tvChange.visibility = View.GONE

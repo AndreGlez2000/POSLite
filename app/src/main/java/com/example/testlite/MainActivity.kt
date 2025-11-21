@@ -4,6 +4,7 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
+import android.view.WindowManager
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -19,15 +20,23 @@ import androidx.navigation.findNavController
 import com.example.testlite.databinding.ActivityMainBinding
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import androidx.activity.viewModels
+import androidx.core.graphics.toColorInt
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
     private val cartViewModel: CartViewModel by viewModels()
+    
+    private var topInset = 0
+    private var bottomInset = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        
+        // Global dark status bar icons
+        val windowInsetsController = androidx.core.view.WindowCompat.getInsetsController(window, window.decorView)
+        windowInsetsController.isAppearanceLightStatusBars = true
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
@@ -35,7 +44,19 @@ class MainActivity : AppCompatActivity() {
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            topInset = systemBars.top
+            bottomInset = systemBars.bottom
+            
+            // Apply insets based on current destination (if available) or default
+            val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as? NavHostFragment
+            val navController = navHostFragment?.navController
+            val currentId = navController?.currentDestination?.id
+            
+            if (currentId == R.id.cartFragment) {
+                v.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
+            } else {
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            }
             insets
         }
 
@@ -69,7 +90,7 @@ class MainActivity : AppCompatActivity() {
 
             // 3. Configure FAB for Scan only
             binding.fab.backgroundTintList = ColorStateList.valueOf(
-                android.graphics.Color.parseColor("#C2185B")
+                "#C2185B".toColorInt()
             )
             binding.fab.setIconResource(R.drawable.barcode_scanner)
             binding.fab.text = "Escanear"
@@ -107,6 +128,14 @@ class MainActivity : AppCompatActivity() {
 
             navController.addOnDestinationChangedListener { _, destination, _ ->
                 updateFabState(destination.id, cartViewModel.cartItems.value)
+                
+                // Update padding dynamically
+                val mainView = findViewById<View>(R.id.main)
+                if (destination.id == R.id.cartFragment) {
+                    mainView.setPadding(mainView.paddingLeft, 0, mainView.paddingRight, bottomInset)
+                } else {
+                    mainView.setPadding(mainView.paddingLeft, topInset, mainView.paddingRight, bottomInset)
+                }
             }
         }
     }
@@ -127,6 +156,8 @@ class MainActivity : AppCompatActivity() {
                     android.graphics.Color.parseColor("#00BFA5")
                 )
                 
+                window.statusBarColor = ContextCompat.getColor(this, R.color.white)
+
                 if (items.isNotEmpty()) {
                     binding.fab.extend()
                     binding.fab.setIconResource(R.drawable.cart_icon)
@@ -145,6 +176,9 @@ class MainActivity : AppCompatActivity() {
                 binding.fab.backgroundTintList = ColorStateList.valueOf(
                     android.graphics.Color.parseColor("#C2185B")
                 )
+                
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+                window.statusBarColor = ContextCompat.getColor(this, R.color.cart_status_bar_color)
             }
             else -> {
                 // Default
@@ -152,6 +186,8 @@ class MainActivity : AppCompatActivity() {
                 binding.fab.backgroundTintList = ColorStateList.valueOf(
                     android.graphics.Color.parseColor("#00BFA5")
                 )
+                
+                window.statusBarColor = ContextCompat.getColor(this, R.color.white)
 
                 if (items.isNotEmpty()) {
                     binding.fab.extend()

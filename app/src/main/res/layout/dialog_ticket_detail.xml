@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="35dp"
-    android:background="@drawable/ticket_background">
+    android:background="@drawable/ticket_background_shadow">
 
     <TextView
         android:id="@+id/tv_detail_ticket_id"
