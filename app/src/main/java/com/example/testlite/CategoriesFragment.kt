@@ -13,8 +13,13 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 class CategoriesFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: CategoryAdapter
+    private lateinit var categoryAdapter: CategoryAdapter
+    private lateinit var productAdapter: ProductAdapter
     private val inventoryViewModel: InventoryViewModel by activityViewModels()
+    private val cartViewModel: CartViewModel by activityViewModels()
+    
+    private var allProducts: List<Product> = emptyList()
+    private var allCategories: List<Category> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,9 +37,12 @@ class CategoriesFragment : Fragment() {
         val fabAddProduct = view.findViewById<FloatingActionButton>(R.id.fab_add_product)
         val fabAddCategory = view.findViewById<FloatingActionButton>(R.id.fab_add_category)
         val btnBack = view.findViewById<android.widget.ImageButton>(R.id.btn_back)
+        val searchView = view.findViewById<androidx.appcompat.widget.SearchView>(R.id.search_bar)
+        
         btnBack.visibility = View.GONE
 
-        adapter = CategoryAdapter(
+        // Initialize Category Adapter
+        categoryAdapter = CategoryAdapter(
             items = emptyList(),
             onItemClick = { category ->
                 val action = CategoriesFragmentDirections.actionCategoriesFragmentToProductsFragment(category.id.toString())
@@ -59,11 +67,72 @@ class CategoriesFragment : Fragment() {
                     .show()
             }
         )
-        recyclerView.adapter = adapter
+
+        // Initialize Product Adapter (for search)
+        productAdapter = ProductAdapter(
+            items = emptyList(),
+            onItemClick = { product ->
+                cartViewModel.addToCart(product)
+                android.widget.Toast.makeText(requireContext(), "${product.name} agregado al carrito", android.widget.Toast.LENGTH_SHORT).show()
+            },
+            onDeleteClick = { product ->
+                 android.app.AlertDialog.Builder(requireContext())
+                    .setTitle("Eliminar Producto")
+                    .setMessage("¿Estás seguro de que deseas eliminar '${product.name}'?")
+                    .setPositiveButton("Sí") { _, _ ->
+                        inventoryViewModel.deleteProduct(
+                            sku = product.sku,
+                            onSuccess = {
+                                android.widget.Toast.makeText(requireContext(), "Producto eliminado", android.widget.Toast.LENGTH_SHORT).show()
+                            },
+                            onError = { error ->
+                                android.widget.Toast.makeText(requireContext(), error, android.widget.Toast.LENGTH_SHORT).show()
+                            }
+                        )
+                    }
+                    .setNegativeButton("No", null)
+                    .show()
+            }
+        )
+
+        recyclerView.adapter = categoryAdapter
 
         inventoryViewModel.categories.observe(viewLifecycleOwner) { categories ->
-            adapter.updateList(categories)
+            allCategories = categories
+            if (recyclerView.adapter == categoryAdapter) {
+                categoryAdapter.updateList(categories)
+            }
         }
+
+        inventoryViewModel.products.observe(viewLifecycleOwner) { products ->
+            allProducts = products
+        }
+        
+        searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                val query = newText?.lowercase()?.trim() ?: ""
+                
+                if (query.isEmpty()) {
+                    if (recyclerView.adapter != categoryAdapter) {
+                        recyclerView.adapter = categoryAdapter
+                    }
+                    categoryAdapter.updateList(allCategories)
+                } else {
+                    if (recyclerView.adapter != productAdapter) {
+                        recyclerView.adapter = productAdapter
+                    }
+                    val searchResults = allProducts.filter { 
+                        it.name.lowercase().contains(query) || it.sku.lowercase().contains(query)
+                    }
+                    productAdapter.updateList(searchResults)
+                }
+                return true
+            }
+        })
 
         fabAdd.setOnClickListener {
             if (speedDialContainer.visibility == View.VISIBLE) {

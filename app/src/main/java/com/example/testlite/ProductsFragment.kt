@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
@@ -71,8 +72,9 @@ class ProductsFragment : Fragment() {
         val categoryId = args.categoryId.toIntOrNull() ?: 0
 
         inventoryViewModel.products.observe(viewLifecycleOwner) { products ->
-            val filteredProducts = products.filter { it.categoryId == categoryId }
-            adapter.updateList(filteredProducts)
+            // Initial list: filtered by category
+            val categoryProducts = products.filter { it.categoryId == categoryId }
+            adapter.updateList(categoryProducts)
             
             searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
@@ -80,11 +82,17 @@ class ProductsFragment : Fragment() {
                 }
 
                 override fun onQueryTextChange(newText: String?): Boolean {
-                    val query = newText?.lowercase() ?: ""
-                    val searchResults = filteredProducts.filter { 
-                        it.name.lowercase().contains(query) || it.sku.lowercase().contains(query)
+                    val query = newText?.lowercase()?.trim() ?: ""
+                    if (query.isEmpty()) {
+                        // Restore category view if search is empty
+                        adapter.updateList(categoryProducts)
+                    } else {
+                        // Global search: filter ALL products by name or SKU
+                        val searchResults = products.filter { 
+                            it.name.lowercase().contains(query) || it.sku.lowercase().contains(query)
+                        }
+                        adapter.updateList(searchResults)
                     }
-                    adapter.updateList(searchResults)
                     return true
                 }
             })
