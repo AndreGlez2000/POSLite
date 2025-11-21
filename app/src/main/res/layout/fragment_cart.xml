@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:paddingBottom="100dp"
+    android:paddingBottom="20dp"
     android:clipToPadding="false"
     tools:context=".CartFragment">
 
@@ -15,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:gravity="center"
         android:layout_marginBottom="16dp">
 
         <TextView
@@ -41,35 +42,70 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <LinearLayout
+    <!-- Total Section -->
+    <TextView
+        android:id="@+id/tv_total"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:layout_marginBottom="115dp">
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:text="Total: $0.00"
+        android:textSize="33sp"
+        android:textStyle="bold"
+        android:gravity="end"
+        android:textColor="#00BFA5"/>
 
-        <TextView
-            android:id="@+id/tv_total"
-            android:layout_width="wrap_content"
+    <!-- Payment Input Section -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_gravity="end"
+        android:hint="Monto"
+        app:boxBackgroundMode="outline"
+        app:boxStrokeColor="#00BFA5"
+        app:boxCornerRadiusTopStart="12dp"
+        app:boxCornerRadiusTopEnd="12dp"
+        app:boxCornerRadiusBottomStart="12dp"
+        app:boxCornerRadiusBottomEnd="12dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_payment_amount"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:text="Total: $0.00"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginRight="80dp"/>
+            android:inputType="numberDecimal"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:maxLines="1"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
-            android:id="@+id/btn_complete_sale"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Completar Venta"
-            android:textSize="12sp"
-            android:textColor="@android:color/white"
-            android:backgroundTint="#00BFA5"
-            app:cornerRadius="16dp"
-            android:layout_marginLeft="45dp"/>
+    <!-- Change Display -->
+    <TextView
+        android:id="@+id/tv_change"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:text=""
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="end"
+        android:visibility="gone"
+        android:textColor="#00BFA5"/>
 
-    </LinearLayout>
+    <!-- Complete Sale Button -->
+    <Button
+        android:id="@+id/btn_complete_sale"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginBottom="150dp"
+        android:text="Completar Venta"
+        android:textSize="14sp"
+        android:textColor="@android:color/white"
+        android:backgroundTint="#00BFA5"
+        app:cornerRadius="16dp"
+        android:paddingVertical="12dp"
+        android:paddingHorizontal="24dp"/>
 
 </LinearLayout>
