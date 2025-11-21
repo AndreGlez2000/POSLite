@@ -3,9 +3,9 @@ package com.example.testlite
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 
 class CartItemAdapter(
     private val onIncreaseClick: (CartItem) -> Unit,
@@ -37,8 +37,8 @@ class CartItemAdapter(
         private val tvProductPrice: TextView = itemView.findViewById(R.id.tv_product_price)
         private val tvQuantity: TextView = itemView.findViewById(R.id.tv_quantity)
         private val tvSubtotal: TextView = itemView.findViewById(R.id.tv_subtotal)
-        private val btnIncrease: ImageButton = itemView.findViewById(R.id.btn_increase)
-        private val btnDecrease: ImageButton = itemView.findViewById(R.id.btn_decrease)
+        private val btnIncrease: MaterialButton = itemView.findViewById(R.id.btn_increase)
+        private val btnDecrease: MaterialButton = itemView.findViewById(R.id.btn_decrease)
         
         fun bind(
             cartItem: CartItem,

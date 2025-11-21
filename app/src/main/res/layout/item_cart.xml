@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
-    app:cardElevation="2dp">
+    app:cardElevation="2dp"
+    app:cardCornerRadius="12dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,7 +32,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="SKU: 123"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:textColor="#757575" />
                 
             <TextView
                 android:id="@+id/tv_product_price"
@@ -39,21 +41,37 @@
                 android:layout_height="wrap_content"
                 android:text="$0.00 c/u"
                 android:textSize="12sp"
+                android:textColor="#757575"
                 android:layout_marginTop="4dp" />
         </LinearLayout>
         
+        <!-- Quantity Controls with modern circular buttons -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:background="@drawable/quantity_control_background"
+            android:paddingHorizontal="4dp"
+            android:paddingVertical="4dp">
             
-            <ImageButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_decrease"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:src="@android:drawable/ic_delete"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:text="−"
+                android:textSize="18sp"
+                android:textColor="@android:color/white"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:insetLeft="0dp"
+                android:insetRight="0dp"
+                android:padding="0dp"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                app:backgroundTint="#00BFA5"
+                app:cornerRadius="16dp"
+                app:iconPadding="0dp"
                 android:contentDescription="Disminuir cantidad" />
             
             <TextView
@@ -63,16 +81,27 @@
                 android:text="1"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:minWidth="40dp"
+                android:minWidth="32dp"
                 android:gravity="center"
                 android:layout_marginHorizontal="8dp" />
             
-            <ImageButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_increase"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:src="@android:drawable/ic_input_add"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:text="+"
+                android:textSize="18sp"
+                android:textColor="@android:color/white"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:insetLeft="0dp"
+                android:insetRight="0dp"
+                android:padding="0dp"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                app:backgroundTint="#00BFA5"
+                app:cornerRadius="16dp"
+                app:iconPadding="0dp"
                 android:contentDescription="Aumentar cantidad" />
         </LinearLayout>
 
