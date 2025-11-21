@@ -5,13 +5,14 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="35dp"
-    android:background="@drawable/dialog_rounded_background">
+    android:background="@drawable/ticket_background">
 
     <TextView
         android:id="@+id/tv_detail_ticket_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Ticket #123"
+        android:layout_gravity="center"
         android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="#00BFA5"
@@ -21,9 +22,18 @@
         android:id="@+id/tv_detail_ticket_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="end"
         android:text="2024-01-15 14:30"
         android:textSize="14sp"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="12dp" />
+    
+    <!-- Dotted line separator -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/dotted_line"
+        android:layerType="software"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -37,14 +47,23 @@
         android:id="@+id/rv_ticket_items"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxHeight="300dp"
-        android:layout_marginBottom="16dp" />
+        android:maxHeight="350dp"
+        android:layout_marginBottom="12dp" />
+    
+    <!-- Dotted line separator -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/dotted_line"
+        android:layerType="software"/>
 
     <TextView
         android:id="@+id/tv_detail_ticket_total"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Total: $0.00"
+        android:layout_gravity="end"
         android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="#00BFA5"
