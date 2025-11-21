@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
     private val cartViewModel: CartViewModel by viewModels()
+    private lateinit var navController: androidx.navigation.NavController
     
     private var topInset = 0
     private var bottomInset = 0
@@ -49,8 +50,8 @@ class MainActivity : AppCompatActivity() {
             
             // Apply insets based on current destination (if available) or default
             val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as? NavHostFragment
-            val navController = navHostFragment?.navController
-            val currentId = navController?.currentDestination?.id
+            val nc = navHostFragment?.navController
+            val currentId = nc?.currentDestination?.id
             
             if (currentId == R.id.cartFragment) {
                 v.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
@@ -64,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
 
-        val navController = navHostFragment.navController
+        navController = navHostFragment.navController
 
         binding.bottomNavBar.background = null
         binding.bottomNavBar.menu.getItem(1).isEnabled = false
@@ -85,21 +86,23 @@ class MainActivity : AppCompatActivity() {
                     .commit()
             }
 
-            // 2. Remove Categories from BottomNav - REVERTED as per user request
-            // binding.bottomNavBar.menu.removeItem(R.id.categoriesFragment)
+            // 2. Sidebar Navigation Logic
+            val btnMenu = findViewById<View>(R.id.btn_sidebar_menu)
+            val btnReceipts = findViewById<View>(R.id.btn_sidebar_receipts)
 
-            // 3. Configure FAB for Scan only
-            binding.fab.backgroundTintList = ColorStateList.valueOf(
-                "#C2185B".toColorInt()
-            )
-            binding.fab.setIconResource(R.drawable.barcode_scanner)
-            binding.fab.text = "Escanear"
-            binding.fab.shrink() // Always shrunk as per request
+            btnMenu?.setOnClickListener {
+                // Simple navigation to Categories
+                navController.navigate(R.id.categoriesFragment)
+            }
 
+            btnReceipts?.setOnClickListener {
+                // Navigate to Receipts
+                navController.navigate(R.id.receiptFragment)
+            }
+
+            // 3. Configure FAB for Scan (Tablet Mode) - static, always opens scanner
             binding.fab.setOnClickListener {
-                // Open Scanner (Dialog or Fragment)
-                // Assuming barcodeScannerPick is the dialog or fragment we want
-                 navController.navigate(R.id.action_global_to_barcodeScannerFragment)
+                navController.navigate(R.id.action_global_to_barcodeScannerFragment)
             }
 
         } else {
@@ -141,61 +144,52 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateFabState(destinationId: Int?, cartItems: List<CartItem>?) {
+        // Tablet early return - no dynamic FAB behavior
         if (resources.getBoolean(R.bool.is_tablet)) return
+
+        // Phone Logic
+        // Dynamic status bar color
+        when (destinationId) {
+            R.id.barcodeScannerFragment -> {
+                window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+                window.statusBarColor = ContextCompat.getColor(this, R.color.white)
+            }
+            R.id.cartFragment -> {
+                window.addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+                window.statusBarColor = ContextCompat.getColor(this, R.color.cart_status_bar_color)
+            }
+            else -> {
+                window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+                window.statusBarColor = ContextCompat.getColor(this, R.color.white)
+            }
+        }
 
         val items = cartItems ?: emptyList()
         val total = items.sumOf { it.subtotal }
         val count = items.sumOf { it.quantity }
 
-        when (destinationId) {
-            R.id.barcodeScannerFragment -> {
-                // Escáner: ocultar nav, mostrar carrito rojo (shrink)
-                binding.bottomNavBar.visibility = View.VISIBLE
-                binding.bottomNavBar.menu.findItem(R.id.placeholder)?.isChecked = true
-                binding.fab.backgroundTintList = ColorStateList.valueOf(
-                    android.graphics.Color.parseColor("#00BFA5")
-                )
+        if (destinationId == R.id.barcodeScannerFragment) {
+            binding.fab.hide()
+        } else if (destinationId == R.id.cartFragment) {
+            binding.fab.hide()
+        } else {
+            if (count > 0) {
+                binding.fab.show()
+                binding.fab.text = "Ver Carrito ($count) - $${String.format("%.2f", total)}"
+                binding.fab.icon = ContextCompat.getDrawable(this, R.drawable.cart_icon)
+                binding.fab.backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#00BFA5")) // Green
                 
-                window.statusBarColor = ContextCompat.getColor(this, R.color.white)
-
-                if (items.isNotEmpty()) {
-                    binding.fab.extend()
-                    binding.fab.setIconResource(R.drawable.cart_icon)
-                    binding.fab.text = "Proceder Venta ($count) - $${String.format("%.2f", total)}"
-                } else {
-                    binding.fab.shrink()
-                    binding.fab.setIconResource(R.drawable.cart_icon)
+                binding.fab.setOnClickListener {
+                    navController.navigate(R.id.cartFragment)
                 }
-            }
-            R.id.cartFragment -> {
-                // Carrito: mostrar nav, scanner verde azulado (shrink)
-                binding.bottomNavBar.visibility = View.VISIBLE
-                binding.bottomNavBar.menu.findItem(R.id.placeholder)?.isChecked = true
-                binding.fab.shrink()
-                binding.fab.setIconResource(R.drawable.barcode_scanner)
-                binding.fab.backgroundTintList = ColorStateList.valueOf(
-                    android.graphics.Color.parseColor("#C2185B")
-                )
+            } else {
+                binding.fab.show()
+                binding.fab.text = "Escanear"
+                binding.fab.icon = ContextCompat.getDrawable(this, R.drawable.barcode_scanner)
+                binding.fab.backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#C2185B")) // Pink
                 
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-                window.statusBarColor = ContextCompat.getColor(this, R.color.cart_status_bar_color)
-            }
-            else -> {
-                // Default
-                binding.bottomNavBar.visibility = View.VISIBLE
-                binding.fab.backgroundTintList = ColorStateList.valueOf(
-                    android.graphics.Color.parseColor("#00BFA5")
-                )
-                
-                window.statusBarColor = ContextCompat.getColor(this, R.color.white)
-
-                if (items.isNotEmpty()) {
-                    binding.fab.extend()
-                    binding.fab.setIconResource(R.drawable.cart_icon)
-                    binding.fab.text = "Proceder Venta ($count) - $${String.format("%.2f", total)}"
-                } else {
-                    binding.fab.shrink()
-                    binding.fab.setIconResource(R.drawable.cart_icon)
+                binding.fab.setOnClickListener {
+                    navController.navigate(R.id.barcodeScannerFragment)
                 }
             }
         }

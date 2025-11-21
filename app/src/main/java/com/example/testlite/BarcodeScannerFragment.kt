@@ -54,10 +54,18 @@ class BarcodeScannerFragment : DialogFragment() {
 
     override fun onStart() {
         super.onStart()
-        dialog?.window?.setLayout(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        )
+        val isTablet = resources.getBoolean(R.bool.is_tablet)
+        if (isTablet) {
+            val density = resources.displayMetrics.density
+            val width = (600 * density).toInt()
+            val height = (800 * density).toInt()
+            dialog?.window?.setLayout(width, height)
+        } else {
+            dialog?.window?.setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+        }
     }
 
     override fun onCreateView(
@@ -88,11 +96,13 @@ class BarcodeScannerFragment : DialogFragment() {
         ) == PackageManager.PERMISSION_GRANTED
     }
 
+    private var cameraProvider: ProcessCameraProvider? = null
+
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
 
         cameraProviderFuture.addListener({
-            val cameraProvider = cameraProviderFuture.get()
+            cameraProvider = cameraProviderFuture.get()
 
             val preview = Preview.Builder()
                 .build()
@@ -112,8 +122,8 @@ class BarcodeScannerFragment : DialogFragment() {
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
             try {
-                cameraProvider.unbindAll()
-                camera = cameraProvider.bindToLifecycle(
+                cameraProvider?.unbindAll()
+                camera = cameraProvider?.bindToLifecycle(
                     viewLifecycleOwner,
                     cameraSelector,
                     preview,
@@ -144,6 +154,9 @@ class BarcodeScannerFragment : DialogFragment() {
             val isPickMode = arguments?.getBoolean("isPickMode") ?: false
             
             activity?.runOnUiThread {
+                // Check if binding is still available (fragment might be destroyed)
+                if (_binding == null) return@runOnUiThread
+
                 // Logica para que vibre el telefono 😭😭💀 y que solo dure 100ms
                 val vibrator = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
                     val vibratorManager = requireContext().getSystemService(android.content.Context.VIBRATOR_MANAGER_SERVICE) as android.os.VibratorManager
@@ -200,6 +213,11 @@ class BarcodeScannerFragment : DialogFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        try {
+            cameraProvider?.unbindAll()
+        } catch (e: Exception) {
+            Log.e(TAG, "Error al liberar cámara", e)
+        }
         cameraExecutor.shutdown()
         // Pinche memoria dinamica nomas no desaparece, solo se transforma 💀
         lastScannedCode = null

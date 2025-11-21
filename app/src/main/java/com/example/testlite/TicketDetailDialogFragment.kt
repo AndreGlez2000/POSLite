@@ -43,7 +43,12 @@ class TicketDetailDialogFragment : DialogFragment() {
     override fun onStart() {
         super.onStart()
         dialog?.window?.apply {
-            val width = resources.displayMetrics.widthPixels - (16.dp() * 2)
+            val isTablet = resources.getBoolean(R.bool.is_tablet)
+            val width = if (isTablet) {
+                500.dp()
+            } else {
+                resources.displayMetrics.widthPixels - (16.dp() * 2)
+            }
             setLayout(
                 width,
                 ViewGroup.LayoutParams.WRAP_CONTENT
