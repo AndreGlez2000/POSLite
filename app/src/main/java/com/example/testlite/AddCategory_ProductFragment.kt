@@ -34,10 +34,18 @@ class AddCategory_ProductFragment : DialogFragment() {
 
     override fun onStart() {
         super.onStart()
-        dialog?.window?.setLayout(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
+        dialog?.window?.apply {
+            val width = resources.displayMetrics.widthPixels - (32.dp() * 2)
+            setLayout(
+                width,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            setBackgroundDrawableResource(android.R.color.transparent)
+        }
+    }
+    
+    private fun Int.dp(): Int {
+        return (this * resources.displayMetrics.density).toInt()
     }
 
     override fun onCreateView(
@@ -58,6 +66,7 @@ class AddCategory_ProductFragment : DialogFragment() {
         tilPrice = view.findViewById(R.id.til_price)
         tilCategory = view.findViewById(R.id.til_category)
         llSku = view.findViewById(R.id.ll_sku)
+        val tilName = view.findViewById<TextInputLayout>(R.id.til_name)
         val btnScan = view.findViewById<ImageButton>(R.id.btn_scan)
         val btnSave = view.findViewById<Button>(R.id.btn_save)
 
@@ -105,8 +114,6 @@ class AddCategory_ProductFragment : DialogFragment() {
         }
 
         btnScan.setOnClickListener {
-            // Use ID directly or updated SafeArgs if available. Using ID for safety since SafeArgs might not be regenerated yet in my mind.
-            // Actually, I'll use the ID resource to be safe.
             findNavController().navigate(R.id.action_addCategoryProductFragment_to_barcodeScannerPick)
         }
 
@@ -116,10 +123,15 @@ class AddCategory_ProductFragment : DialogFragment() {
         }
 
         btnSave.setOnClickListener {
+            val tilName = view.findViewById<TextInputLayout>(R.id.til_name)
+            val tilSku = view.findViewById<TextInputLayout>(R.id.til_sku)
+            
             val name = etName.text.toString()
             if (name.isBlank()) {
-                etName.error = "Requerido"
+                tilName.error = "Campo requerido"
                 return@setOnClickListener
+            } else {
+                tilName.error = null
             }
 
             if (mode == "product") {
@@ -128,26 +140,32 @@ class AddCategory_ProductFragment : DialogFragment() {
                 val categoryText = etCategory.text.toString()
 
                 if (priceStr.isBlank()) {
-                    etPrice.error = "Requerido"
+                    tilPrice.error = "Campo requerido"
                     return@setOnClickListener
+                } else {
+                    tilPrice.error = null
                 }
+                
                 if (sku.isBlank()) {
-                    etSku.error = "Requerido"
+                    tilSku.error = "Campo requerido"
                     return@setOnClickListener
                 }
+                
                 if (categoryText.isBlank()) {
-                    etCategory.error = "Requerido"
+                    tilCategory.error = "Campo requerido"
                     return@setOnClickListener
+                } else {
+                    tilCategory.error = null
                 }
 
                 val price = priceStr.toDoubleOrNull()
                 if (price == null) {
-                    etPrice.error = "Inválido"
+                    tilPrice.error = "Precio inválido"
                     return@setOnClickListener
                 }
                 
                 if (selectedCategoryId == 0) {
-                    etCategory.error = "Selecciona una categoría"
+                    tilCategory.error = "Selecciona una categoría"
                     return@setOnClickListener
                 }
                 
@@ -156,13 +174,15 @@ class AddCategory_ProductFragment : DialogFragment() {
                 val skuExists = existingProducts.any { it.sku == sku }
                 
                 if (skuExists) {
-                    etSku.error = "Este SKU ya existe"
+                    tilSku.error = "Este SKU ya existe en la base de datos"
                     Toast.makeText(
                         context,
                         "Ya existe un producto con el SKU: $sku",
                         Toast.LENGTH_SHORT
                     ).show()
                     return@setOnClickListener
+                } else {
+                    tilSku.error = null
                 }
 
                 inventoryViewModel.addProduct(name, price, sku, selectedCategoryId)

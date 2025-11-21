@@ -42,10 +42,18 @@ class TicketDetailDialogFragment : DialogFragment() {
     
     override fun onStart() {
         super.onStart()
-        dialog?.window?.setLayout(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
+        dialog?.window?.apply {
+            val width = resources.displayMetrics.widthPixels - (32.dp() * 2)
+            setLayout(
+                width,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            setBackgroundDrawableResource(android.R.color.transparent)
+        }
+    }
+    
+    private fun Int.dp(): Int {
+        return (this * resources.displayMetrics.density).toInt()
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

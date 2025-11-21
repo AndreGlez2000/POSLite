@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="35dp"
+    android:background="@drawable/dialog_rounded_background">
 
     <TextView
         android:id="@+id/tv_detail_ticket_id"
@@ -12,6 +14,7 @@
         android:text="Ticket #123"
         android:textSize="20sp"
         android:textStyle="bold"
+        android:textColor="#00BFA5"
         android:layout_marginBottom="8dp" />
 
     <TextView
@@ -44,12 +47,14 @@
         android:text="Total: $0.00"
         android:textSize="18sp"
         android:textStyle="bold"
+        android:textColor="#00BFA5"
         android:layout_marginBottom="16dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="center">
         
         <Button
             android:id="@+id/btn_share"
@@ -57,8 +62,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
-            android:text="Compartir PDF"
-            android:drawableLeft="@android:drawable/ic_menu_share" />
+            android:text="COMPARTIR"
+            android:backgroundTint="#00BFA5"
+            android:textColor="@android:color/white"
+            app:cornerRadius="20dp" />
         
         <Button
             android:id="@+id/btn_close"
@@ -66,7 +73,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
-            android:text="Cerrar" />
+            android:text="Cerrar"
+            android:backgroundTint="#00BFA5"
+            android:textColor="@android:color/white"
+            app:cornerRadius="20dp" />
     </LinearLayout>
 
 </LinearLayout>

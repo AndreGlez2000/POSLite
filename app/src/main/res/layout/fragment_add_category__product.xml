@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:padding="35dp"
+    android:background="@drawable/dialog_rounded_background"
     tools:context=".AddCategory_ProductFragment">
 
     <TextView
@@ -15,14 +16,18 @@
         android:layout_marginBottom="16dp"
         android:text="Agregar Item"
         android:textSize="24sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textColor="#00BFA5" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:hint="Nombre">
+        android:layout_marginBottom="1dp"
+        android:hint="Nombre"
+        app:boxStrokeColor="#00BFA5"
+        app:hintTextColor="#00BFA5"
+        app:errorEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_name"
@@ -35,9 +40,12 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="1dp"
         android:hint="Categoría"
         android:visibility="gone"
+        app:boxStrokeColor="#00BFA5"
+        app:hintTextColor="#00BFA5"
+        app:errorEnabled="true"
         tools:visibility="visible">
 
         <AutoCompleteTextView
@@ -51,9 +59,12 @@
         android:id="@+id/til_price"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="1dp"
         android:hint="Precio"
         android:visibility="gone"
+        app:boxStrokeColor="#00BFA5"
+        app:hintTextColor="#00BFA5"
+        app:errorEnabled="true"
         tools:visibility="visible">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -76,7 +87,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="SKU">
+            android:hint="SKU"
+            app:boxStrokeColor="#00BFA5"
+            app:hintTextColor="#00BFA5"
+            app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_sku"
@@ -86,20 +100,26 @@
 
         <ImageButton
             android:id="@+id/btn_scan"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center_vertical"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_gravity="top"
             android:layout_marginStart="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Escanear código"
+            android:scaleType="fitCenter"
+            android:padding="12dp"
+            app:tint="#C2185B"
             android:src="@drawable/barcode_scanner" />
     </LinearLayout>
 
     <Button
         android:id="@+id/btn_save"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Guardar" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        android:text="Guardar"
+        android:backgroundTint="#00BFA5"
+        android:textColor="@android:color/white"
+        app:cornerRadius="20dp" />
 
 </LinearLayout>
