@@ -64,6 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:fabSize="mini"
+                app:backgroundTint="#00BFA5"
                 android:src="@drawable/category_icon" 
                 android:contentDescription="Agregar Producto" />
         </LinearLayout>
@@ -88,6 +89,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:fabSize="mini"
+                app:backgroundTint="#00BFA5"
                 android:src="@drawable/category_icon"
                 android:contentDescription="Agregar Categoría" />
         </LinearLayout>

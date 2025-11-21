@@ -38,6 +38,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/agregar_categoria_producto"
             android:src="@android:drawable/ic_input_add"
+            app:backgroundTint="#00BFA5"
             app:fabSize="mini" />
     </LinearLayout>
 
