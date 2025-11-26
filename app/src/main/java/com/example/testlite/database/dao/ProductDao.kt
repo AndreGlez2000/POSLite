@@ -15,15 +15,15 @@ interface ProductDao {
     @Delete
     suspend fun delete(product: ProductEntity)
     
-    @Query("SELECT * FROM Producto")
+    @Query("SELECT * FROM Producto WHERE is_active = 1")
     fun getAllProducts(): Flow<List<ProductEntity>>
     
-    @Query("SELECT * FROM Producto WHERE id_categoria_fk = :categoryId")
+    @Query("SELECT * FROM Producto WHERE id_categoria_fk = :categoryId AND is_active = 1")
     fun getProductsByCategory(categoryId: Int): Flow<List<ProductEntity>>
     
-    @Query("SELECT * FROM Producto WHERE sku = :sku")
+    @Query("SELECT * FROM Producto WHERE sku = :sku AND is_active = 1")
     suspend fun getProductBySku(sku: String): ProductEntity?
 
-    @Query("DELETE FROM Producto WHERE sku = :sku")
+    @Query("UPDATE Producto SET is_active = 0 WHERE sku = :sku")
     suspend fun deleteBySku(sku: String)
 }

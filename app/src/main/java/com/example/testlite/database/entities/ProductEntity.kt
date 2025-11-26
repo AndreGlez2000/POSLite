@@ -20,5 +20,6 @@ data class ProductEntity(
     @PrimaryKey val sku: String,
     @ColumnInfo(name = "nombre") val nombre: String,
     @ColumnInfo(name = "precio") val precio: Double,
-    @ColumnInfo(name = "id_categoria_fk") val idCategoriaFk: Int
+    @ColumnInfo(name = "id_categoria_fk") val idCategoriaFk: Int,
+    @ColumnInfo(name = "is_active", defaultValue = "1") val isActive: Boolean = true
 )

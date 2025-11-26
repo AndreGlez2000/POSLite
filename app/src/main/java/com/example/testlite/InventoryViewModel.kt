@@ -26,14 +26,16 @@ class InventoryViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun addCategory(name: String) {
+        val capitalizedName = name.trim().replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
         viewModelScope.launch {
-            inventoryRepository.addCategory(name)
+            inventoryRepository.addCategory(capitalizedName)
         }
     }
 
     fun addProduct(name: String, price: Double, sku: String, categoryId: Int) {
+        val capitalizedName = name.trim().replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
         viewModelScope.launch {
-            inventoryRepository.addProduct(name, price, sku, categoryId)
+            inventoryRepository.addProduct(capitalizedName, price, sku, categoryId)
         }
     }
 
@@ -55,10 +57,22 @@ class InventoryViewModel(application: Application) : AndroidViewModel(applicatio
     fun deleteCategory(id: Int, onSuccess: () -> Unit, onError: (String) -> Unit) {
         viewModelScope.launch {
             try {
+                val productCount = inventoryRepository.getProductCountByCategory(id)
                 inventoryRepository.deleteCategory(id)
                 onSuccess()
             } catch (e: Exception) {
                 onError("Error al eliminar categoría: ${e.message}")
+            }
+        }
+    }
+
+    fun getProductCountByCategory(categoryId: Int, callback: (Int) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val count = inventoryRepository.getProductCountByCategory(categoryId)
+                callback(count)
+            } catch (e: Exception) {
+                callback(0)
             }
         }
     }

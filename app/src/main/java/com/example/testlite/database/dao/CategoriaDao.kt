@@ -15,12 +15,15 @@ interface CategoriaDao {
     @Delete
     suspend fun delete(categoria: CategoriaEntity)
     
-    @Query("SELECT * FROM Categoria")
+    @Query("SELECT * FROM Categoria WHERE is_active = 1")
     fun getAllCategorias(): Flow<List<CategoriaEntity>>
     
-    @Query("SELECT * FROM Categoria WHERE id = :id")
+    @Query("SELECT * FROM Categoria WHERE id = :id AND is_active = 1")
     suspend fun getCategoriaById(id: Int): CategoriaEntity?
 
-    @Query("DELETE FROM Categoria WHERE id = :id")
+    @Query("UPDATE Categoria SET is_active = 0 WHERE id = :id")
     suspend fun deleteById(id: Int)
+
+    @Query("SELECT COUNT(*) FROM Producto WHERE id_categoria_fk = :categoryId AND is_active = 1")
+    suspend fun getProductCountByCategory(categoryId: Int): Int
 }

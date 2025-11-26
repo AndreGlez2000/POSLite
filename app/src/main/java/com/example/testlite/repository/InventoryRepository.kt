@@ -9,6 +9,7 @@ import com.example.testlite.database.entities.ProductEntity
 import com.example.testlite.database.toDomain
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.firstOrNull
 
 class InventoryRepository(
     private val categoriaDao: CategoriaDao,
@@ -41,6 +42,16 @@ class InventoryRepository(
     }
 
     suspend fun deleteCategory(id: Int) {
+        // Primero eliminamos todos los productos de esta categoría
+        val productList = productDao.getProductsByCategory(id).firstOrNull() ?: emptyList()
+        productList.forEach { product ->
+            productDao.deleteBySku(product.sku)
+        }
+        // Luego eliminamos la categoría
         categoriaDao.deleteById(id)
+    }
+
+    suspend fun getProductCountByCategory(categoryId: Int): Int {
+        return categoriaDao.getProductCountByCategory(categoryId)
     }
 }

@@ -49,22 +49,37 @@ class CategoriesFragment : Fragment() {
                 findNavController().navigate(action)
             },
             onDeleteClick = { category ->
-                android.app.AlertDialog.Builder(requireContext())
-                    .setTitle("Eliminar Categoría")
-                    .setMessage("¿Estás seguro de que deseas eliminar '${category.name}'?")
-                    .setPositiveButton("Sí") { _, _ ->
-                        inventoryViewModel.deleteCategory(
-                            id = category.id,
-                            onSuccess = {
-                                android.widget.Toast.makeText(requireContext(), "Categoría eliminada", android.widget.Toast.LENGTH_SHORT).show()
-                            },
-                            onError = { error ->
-                                android.widget.Toast.makeText(requireContext(), error, android.widget.Toast.LENGTH_SHORT).show()
-                            }
-                        )
+                // Primero obtenemos el conteo de productos
+                inventoryViewModel.getProductCountByCategory(category.id) { productCount ->
+                    val message = if (productCount > 0) {
+                        "¿Estás seguro de que deseas eliminar '${category.name}'?\n\n" +
+                        "Esta acción también eliminará $productCount producto(s) asociado(s)."
+                    } else {
+                        "¿Estás seguro de que deseas eliminar '${category.name}'?"
                     }
-                    .setNegativeButton("No", null)
-                    .show()
+                    
+                    android.app.AlertDialog.Builder(requireContext())
+                        .setTitle("Eliminar Categoría")
+                        .setMessage(message)
+                        .setPositiveButton("Sí") { _, _ ->
+                            inventoryViewModel.deleteCategory(
+                                id = category.id,
+                                onSuccess = {
+                                    val successMessage = if (productCount > 0) {
+                                        "Categoría y $productCount producto(s) eliminado(s)"
+                                    } else {
+                                        "Categoría eliminada"
+                                    }
+                                    android.widget.Toast.makeText(requireContext(), successMessage, android.widget.Toast.LENGTH_SHORT).show()
+                                },
+                                onError = { error ->
+                                    android.widget.Toast.makeText(requireContext(), error, android.widget.Toast.LENGTH_LONG).show()
+                                }
+                            )
+                        }
+                        .setNegativeButton("No", null)
+                        .show()
+                }
             }
         )
 

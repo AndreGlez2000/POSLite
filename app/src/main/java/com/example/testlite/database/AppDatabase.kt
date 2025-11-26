@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
         TicketEntity::class,
         TicketItemEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -34,6 +34,13 @@ abstract class AppDatabase : RoomDatabase() {
     companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null
+
+        private val MIGRATION_1_2 = object : androidx.room.migration.Migration(1, 2) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE Producto ADD COLUMN is_active INTEGER NOT NULL DEFAULT 1")
+                database.execSQL("ALTER TABLE Categoria ADD COLUMN is_active INTEGER NOT NULL DEFAULT 1")
+            }
+        }
         
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
@@ -42,6 +49,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "testlite_database"
                 )
+                .addMigrations(MIGRATION_1_2)
                 .addCallback(DatabaseCallback(context))
                 .build()
                 INSTANCE = instance
