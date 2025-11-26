@@ -1,61 +1,84 @@
-# Esquema de la Base de Datos (Room) - POSLite
+# Esquema de Base de Datos
 
-Este documento define la estructura de la base de datos local (Room/SQLite) de la aplicación.
+POSLite utiliza **Room** (una abstracción sobre SQLite) para la persistencia local de datos. La base de datos está normalizada para asegurar la integridad de los datos.
 
-## Tabla: `Producto`
-Almacena cada producto individual que se puede vender.
+## Diagrama Entidad-Relación (ERD)
 
-| Columna | Tipo de Dato | Propósito | Notas |
-| :--- | :--- | :--- | :--- |
-| `sku` | `String` | **Primary Key.** Identificador único (código de barras). | |
-| `nombre` | `String` | Nombre del producto (ej. "Coca-Cola 600ml"). | |
-| `precio` | `Double` | Precio de venta actual. | |
-| `id_categoria_fk`| `Int` | **Foreign Key** que apunta a `Categoria.id`. | `index = true` |
+```mermaid
+erDiagram
+    CATEGORIA ||--|{ PRODUCTO : contiene
+    PRODUCTO ||--o{ TICKET_ITEM : "incluido en"
+    TICKET ||--|{ TICKET_ITEM : "compuesto de"
 
-## Tabla: `Categoria`
-Almacena las categorías para organizar los productos.
+    CATEGORIA {
+        int id PK
+        string nombre
+    }
 
-| Columna | Tipo de Dato | Propósito | Notas |
-| :--- | :--- | :--- | :--- |
-| `id` | `Int` | **Primary Key.** | `autoGenerate = true` |
-| `nombre` | `String` | Nombre de la categoría (ej. "Bebidas"). | |
+    PRODUCTO {
+        string sku PK
+        string nombre
+        double precio
+        int id_categoria_fk FK
+    }
 
-## Tabla: `Ticket`
-Almacena el resumen global de cada venta completada. Se usa para la lista principal de "Tickets".
+    TICKET {
+        int ticket_id PK
+        long fecha_hora
+        double total
+    }
 
-| Columna | Tipo de Dato | Propósito | Notas |
-| :--- | :--- | :--- | :--- |
-| `ticket_id` | `Int` | **Primary Key.** | `autoGenerate = true` |
-| `fecha_hora` | `Long` | Timestamp (Unix Epoch) de cuándo se completó la venta. | |
-| `total` | `Double` | Monto total final de la venta. | |
+    TICKET_ITEM {
+        int item_id PK
+        int ticket_id_fk FK
+        string sku_producto_fk FK
+        int cantidad
+        double precio_momento
+    }
+```
 
-## Tabla: `TicketItem`
-Almacena el desglose (los productos individuales) de cada `Ticket`.
+## Detalle de Tablas
 
-| Columna | Tipo de Dato | Propósito | Notas |
-| :--- | :--- | :--- | :--- |
-| `item_id` | `Int` | **Primary Key.** | `autoGenerate = true` |
-| `ticket_id_fk`| `Int` | **Foreign Key** que apunta a `Ticket.ticket_id`. | `index = true` |
-| `sku_producto_fk`| `String`| **Foreign Key** que apunta a `Producto.sku`. | |
-| `cantidad` | `Int` | Cuántas unidades de este producto se vendieron. | |
-| `precio_en_ese_momento`| `Double`| El precio del producto al momento exacto de la venta (vital para historial). | |
+### 1. `Producto`
+Almacena los artículos del inventario.
 
-## Relaciones (Queries)
+| Columna | Tipo | Descripción |
+|:-------|:-----|:------------|
+| `sku` | String | **PK**. Valor del código de barras. Identificador único. |
+| `nombre` | String | Nombre del producto (ej. "Coca-Cola 600ml"). |
+| `precio` | Double | Precio de venta actual. |
+| `id_categoria_fk` | Int | **FK**. Referencia a `Categoria.id`. |
 
-Para obtener un ticket completo con sus productos, se usará una consulta con `JOIN` o, preferiblemente, una **Clase de Relación** en Room:
+### 2. `Categoria`
+Agrupa productos para una navegación más fácil.
 
-```kotlin
-// Clase de datos para la consulta
-data class TicketConItems(
-    @Embedded val ticket: Ticket,
-    @Relation(
-        parentColumn = "ticket_id",
-        entityColumn = "ticket_id_fk"
-    )
-    val items: List<TicketItem>
-)
+| Columna | Tipo | Descripción |
+|:-------|:-----|:------------|
+| `id` | Int | **PK**. ID autogenerado. |
+| `nombre` | String | Nombre de la categoría (ej. "Bebidas", "Botanas"). |
 
-// En el DAO
-@Transaction
-@Query("SELECT * FROM Ticket WHERE ticket_id = :ticketId")
-suspend fun getTicketConItems(ticketId: Int): TicketConItems
+### 3. `Ticket`
+Representa el encabezado de una transacción completada.
+
+| Columna | Tipo | Descripción |
+|:-------|:-----|:------------|
+| `ticket_id` | Int | **PK**. ID autogenerado. |
+| `fecha_hora` | Long | Timestamp Unix de la venta. |
+| `total` | Double | Monto total final de la venta. |
+
+### 4. `TicketItem` (Detalles de Venta)
+Vincula productos a un ticket, preservando el precio al momento de la venta.
+
+| Columna | Tipo | Descripción |
+|:-------|:-----|:------------|
+| `item_id` | Int | **PK**. ID autogenerado. |
+| `ticket_id_fk` | Int | **FK**. Referencia a `Ticket.ticket_id`. |
+| `sku_producto_fk` | String | **FK**. Referencia a `Producto.sku`. |
+| `cantidad` | Int | Cantidad vendida. |
+| `precio_momento` | Double | Precio del artículo **al momento de la venta**. Esto asegura precisión histórica incluso si los precios cambian después. |
+
+## Objetos de Acceso a Datos (DAOs)
+
+- **ProductDao**: Maneja CRUD para productos y búsqueda por SKU o Categoría.
+- **CategoriaDao**: Maneja CRUD para categorías.
+- **TicketDao**: Maneja el guardado de tickets y recuperación del historial de ventas. Típicamente usa una `@Transaction` para guardar el Ticket y todos sus TicketItems atómicamente.

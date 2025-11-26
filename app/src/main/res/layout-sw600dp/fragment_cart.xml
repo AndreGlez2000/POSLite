@@ -35,10 +35,10 @@
                 android:layout_weight="1"
                 android:text="20/11/2025"
                 android:textSize="24sp"
-                android:textStyle="bold"
+                android:textStyle="bold|italic"
                 android:gravity="center"
-                android:layout_marginStart="40dp"
-                android:textColor="#333333" />
+                android:layout_marginStart="48dp"
+                android:textColor="@color/text" />
 
             <ImageButton
                 android:id="@+id/btn_clear_cart"
@@ -46,7 +46,7 @@
                 android:layout_height="48dp"
                 android:src="@android:drawable/ic_menu_delete"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="#00BFA5"
+                app:tint="@color/text"
                 android:contentDescription="Cancelar venta" />
         </LinearLayout>
         
@@ -81,7 +81,7 @@
             android:textSize="32sp"
             android:textStyle="bold"
             android:gravity="end"
-            android:textColor="#00BFA5"/>
+            android:textColor="@color/text"/>
 
         <!-- Payment Input Section -->
         <com.google.android.material.textfield.TextInputLayout
@@ -124,7 +124,7 @@
             android:id="@+id/btn_complete_sale"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:backgroundTint="#00BFA5"
+            android:backgroundTint="@color/cart_status_bar_color"
             android:text="Completar Venta"
             android:textColor="@android:color/white"
             android:textSize="16sp"

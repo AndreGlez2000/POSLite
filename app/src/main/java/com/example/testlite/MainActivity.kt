@@ -179,7 +179,7 @@ class MainActivity : AppCompatActivity() {
                 binding.fab.shrink()
                 binding.fab.setIconResource(R.drawable.barcode_scanner)
                 binding.fab.backgroundTintList = android.content.res.ColorStateList.valueOf(
-                    android.graphics.Color.parseColor("#C2185B")
+                    android.graphics.Color.parseColor("#666666")
                 )
                 
                 window.addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)

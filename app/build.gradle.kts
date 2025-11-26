@@ -14,6 +14,9 @@ android {
     }
 
     defaultConfig {
+        vectorDrawables {
+            useSupportLibrary = true
+        }
         applicationId = "com.example.testlite"
         minSdk = 24
         targetSdk = 36

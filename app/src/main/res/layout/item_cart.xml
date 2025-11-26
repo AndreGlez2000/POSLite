@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="12dp">
+        android:padding="6dp">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -25,8 +25,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Product Name"
-                android:textSize="16sp"
-                android:textStyle="bold"
+                android:textSize="15sp"
+                android:textColor="#666666"
+                android:textStyle="bold|italic"
                 android:maxLines="2"
                 android:ellipsize="end" />
         </LinearLayout>
@@ -55,7 +56,7 @@
                 android:padding="0dp"
                 android:minWidth="0dp"
                 android:minHeight="0dp"
-                app:backgroundTint="#00BFA5"
+                app:backgroundTint="#666666"
                 app:cornerRadius="16dp"
                 app:iconPadding="0dp"
                 android:contentDescription="Disminuir cantidad" />
@@ -85,7 +86,7 @@
                 android:padding="0dp"
                 android:minWidth="0dp"
                 android:minHeight="0dp"
-                app:backgroundTint="#00BFA5"
+                app:backgroundTint="#666666"
                 app:cornerRadius="16dp"
                 app:iconPadding="0dp"
                 android:contentDescription="Aumentar cantidad" />
@@ -95,9 +96,10 @@
             android:id="@+id/tv_subtotal"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
+            android:textColor="#666666"
             android:layout_gravity="center_vertical"
             android:text="$0.00"
-            android:textSize="16sp"
+            android:textSize="15sp"
             android:textStyle="bold"
             android:gravity="end"
             android:layout_marginStart="8dp" />

@@ -37,8 +37,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/agregar_categoria_producto"
-            android:src="@android:drawable/ic_input_add"
-            app:backgroundTint="#00BFA5"
+            android:src="@drawable/baseline_add_24"
+            android:tint="@color/white"
+            android:drawableTint="@color/white"
+            app:backgroundTint="@color/blue"
             app:fabSize="mini" />
     </LinearLayout>
 
