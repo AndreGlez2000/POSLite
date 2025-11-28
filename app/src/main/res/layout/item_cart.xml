@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    app:cardElevation="2dp"
+    app:cardCornerRadius="12dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="6dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tv_product_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Product Name"
+                android:textSize="15sp"
+                android:textColor="#666666"
+                android:textStyle="bold|italic"
+                android:maxLines="2"
+                android:ellipsize="end" />
+        </LinearLayout>
+        
+        <!-- Quantity Controls with modern circular buttons -->
+        <LinearLayout
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/quantity_control_background"
+            android:paddingHorizontal="4dp"
+            android:paddingVertical="4dp">
+            
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_decrease"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:text="−"
+                android:textSize="18sp"
+                android:textColor="@android:color/white"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:insetLeft="0dp"
+                android:insetRight="0dp"
+                android:padding="0dp"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                app:backgroundTint="#666666"
+                app:cornerRadius="16dp"
+                app:iconPadding="0dp"
+                android:contentDescription="Disminuir cantidad" />
+            
+            <TextView
+                android:id="@+id/tv_quantity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="1"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginHorizontal="8dp" />
+            
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_increase"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:text="+"
+                android:textSize="18sp"
+                android:textColor="@android:color/white"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:insetLeft="0dp"
+                android:insetRight="0dp"
+                android:padding="0dp"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                app:backgroundTint="#666666"
+                app:cornerRadius="16dp"
+                app:iconPadding="0dp"
+                android:contentDescription="Aumentar cantidad" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_subtotal"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:textColor="#666666"
+            android:layout_gravity="center_vertical"
+            android:text="$0.00"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:gravity="end"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

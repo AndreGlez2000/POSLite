@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_categoriesFragment_to_productsFragment"
             app:destination="@id/productsFragment" />
+        <action
+            android:id="@+id/action_global_to_addCategoryProductFragment"
+            app:destination="@id/addCategory_ProductFragment" />
     </fragment>
 
     <fragment
@@ -23,6 +26,9 @@
         <argument
             android:name="categoryId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_global_to_addCategoryProductFragment"
+            app:destination="@id/addCategory_ProductFragment" />
     </fragment>
 
     <fragment
@@ -43,13 +49,46 @@
         <action
             android:id="@+id/action_barcodeScannerFragment_to_cartFragment"
             app:destination="@id/cartFragment" />
+        <argument
+            android:name="isPickMode"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
+
+    <dialog
+        android:id="@+id/barcodeScannerPick"
+        android:name="com.example.testlite.BarcodeScannerFragment"
+        android:label="Escáner"
+        tools:layout="@layout/fragment_barcode_scanner">
+        <argument
+            android:name="isPickMode"
+            app:argType="boolean"
+            android:defaultValue="true" />
+    </dialog>
 
     <fragment
         android:id="@+id/receiptFragment"
         android:name="com.example.testlite.ReceiptFragment"
         android:label="Recibos"
         tools:layout="@layout/fragment_receipt" />
+
+    <dialog
+        android:id="@+id/addCategory_ProductFragment"
+        android:name="com.example.testlite.AddCategory_ProductFragment"
+        android:label="Agregar Item"
+        tools:layout="@layout/fragment_add_category__product">
+        <argument
+            android:name="mode"
+            app:argType="string" />
+        <argument
+            android:name="categoryId"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_addCategoryProductFragment_to_barcodeScannerPick"
+            app:destination="@id/barcodeScannerPick" />
+    </dialog>
 
     <!-- Acciones globales para navegar desde cualquier lugar -->
     <action
